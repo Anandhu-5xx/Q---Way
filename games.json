@@ -1,0 +1,537 @@
+[
+  {
+    "Game Title": "Counter-Strike 2",
+    "Play Mode": "Online",
+    "Status / Availability": "Full Game (Steam)",
+    "Genre / Style": "Tactical FPS",
+    "Key Features & Why It's Awesome": "Premier tactical competitive shooter with precise gunplay, map control, and active esports scene.",
+    "Similar To / AAA Alternative": "Call of Duty: Search & Destroy, Valorant",
+    "Personal Rating / Notes": "[Add your thoughts]",
+    "Steam App ID": 730
+  },
+  {
+    "Game Title": "Dota 2",
+    "Play Mode": "Online",
+    "Status / Availability": "Full Game (Steam)",
+    "Genre / Style": "MOBA",
+    "Key Features & Why It's Awesome": "Deep, complex strategy with every single hero unlocked right from the start.",
+    "Similar To / AAA Alternative": "League of Legends",
+    "Personal Rating / Notes": "[Add your thoughts]",
+    "Steam App ID": 570
+  },
+  {
+    "Game Title": "Apex Legends",
+    "Play Mode": "Online",
+    "Status / Availability": "Full Game (Steam)",
+    "Genre / Style": "Battle Royale / FPS",
+    "Key Features & Why It's Awesome": "Fast-paced movement, unique character abilities, and smooth gunplay dynamics.",
+    "Similar To / AAA Alternative": "Titanfall, Call of Duty: Warzone",
+    "Personal Rating / Notes": "[Add your thoughts]",
+    "Steam App ID": 1172470
+  },
+  {
+    "Game Title": "Path of Exile",
+    "Play Mode": "Online",
+    "Status / Availability": "Full Game (Steam)",
+    "Genre / Style": "Action RPG",
+    "Key Features & Why It's Awesome": "Massive skill tree, deep item customization, and endless endgame dungeon crawling.",
+    "Similar To / AAA Alternative": "Diablo IV",
+    "Personal Rating / Notes": "[Add your thoughts]",
+    "Steam App ID": 238960
+  },
+  {
+    "Game Title": "Warframe",
+    "Play Mode": "Online",
+    "Status / Availability": "Full Game (Steam)",
+    "Genre / Style": "Sci-Fi Action / Co-Op",
+    "Key Features & Why It's Awesome": "High-speed space ninja parkour, deep loot progression, and extensive customization.",
+    "Similar To / AAA Alternative": "Destiny 2, Anthem",
+    "Personal Rating / Notes": "Highly optimized for low-spec hardware / integrated graphics.",
+    "Steam App ID": 230410
+  },
+  {
+    "Game Title": "The Finals",
+    "Play Mode": "Online",
+    "Status / Availability": "Full Game (Steam)",
+    "Genre / Style": "Team Shooter",
+    "Key Features & Why It's Awesome": "Fully destructible environments, fast movement, and high-octane game show action.",
+    "Similar To / AAA Alternative": "Battlefield, Overwatch 2",
+    "Personal Rating / Notes": "[Add your thoughts]",
+    "Steam App ID": 2073850
+  },
+  {
+    "Game Title": "Overwatch 2",
+    "Play Mode": "Online",
+    "Status / Availability": "Full Game (Steam)",
+    "Genre / Style": "Hero Shooter",
+    "Key Features & Why It's Awesome": "Objective-based team gameplay featuring diverse hero roles (Tank, Damage, Support).",
+    "Similar To / AAA Alternative": "Team Fortress 2, Paladins",
+    "Personal Rating / Notes": "[Add your thoughts]",
+    "Steam App ID": 2357570
+  },
+  {
+    "Game Title": "Halo Infinite (Multiplayer)",
+    "Play Mode": "Online & Offline",
+    "Status / Availability": "Full Game (Steam)",
+    "Genre / Style": "Arena Sci-Fi FPS",
+    "Key Features & Why It's Awesome": "Classic arena shooter gameplay with smooth mechanics, vehicle combat, and grapple hook.",
+    "Similar To / AAA Alternative": "Halo series, Destiny 2",
+    "Personal Rating / Notes": "Supports bot matches and custom games offline.",
+    "Steam App ID": 1240440
+  },
+  {
+    "Game Title": "Brawlhalla",
+    "Play Mode": "Online & Offline",
+    "Status / Availability": "Full Game (Steam)",
+    "Genre / Style": "Platform Fighter",
+    "Key Features & Why It's Awesome": "Easy-to-pick-up 2D platform fighter featuring casual and competitive multiplayer modes.",
+    "Similar To / AAA Alternative": "Super Smash Bros.",
+    "Personal Rating / Notes": "[Add your thoughts]",
+    "Steam App ID": 291550
+  },
+  {
+    "Game Title": "Unturned",
+    "Play Mode": "Online & Offline",
+    "Status / Availability": "Full Game (Steam)",
+    "Genre / Style": "Open-World Survival",
+    "Key Features & Why It's Awesome": "Blocky, zombie-survival sandbox with base building, crafting, and multiplayer servers.",
+    "Similar To / AAA Alternative": "DayZ, Rust",
+    "Personal Rating / Notes": "[Add your thoughts]",
+    "Steam App ID": 304930
+  },
+  {
+    "Game Title": "Zenless Zone Zero",
+    "Play Mode": "Online",
+    "Status / Availability": "Full Game (Steam)",
+    "Genre / Style": "3D High-Speed Urban Action RPG",
+    "Key Features & Why It's Awesome": "Ultra-fluid 3D hack-and-slash combat with dodge/parry mechanics, stylish character designs, and flashy team combos.",
+    "Similar To / AAA Alternative": "Wuthering Waves, Devil May Cry 5, Neverness to Everness",
+    "Personal Rating / Notes": "Anime-styled fast-paced mission combat.",
+    "Steam App ID": 4162040
+  },
+  {
+    "Game Title": "The First Descendant",
+    "Play Mode": "Online",
+    "Status / Availability": "Full Game (Steam)",
+    "Genre / Style": "Third-Person Looter Shooter",
+    "Key Features & Why It's Awesome": "Fast-paced co-op shooter with high-fidelity graphics, grappling hook traversal, and unique abilities.",
+    "Similar To / AAA Alternative": "Warframe, Destiny 2",
+    "Personal Rating / Notes": "[Add your thoughts]",
+    "Steam App ID": 2074920
+  },
+  {
+    "Game Title": "Marvel Rivals",
+    "Play Mode": "Online",
+    "Status / Availability": "Full Game (Steam)",
+    "Genre / Style": "Third-Person Hero Shooter",
+    "Key Features & Why It's Awesome": "Team-based hero shooter featuring iconic Marvel heroes, destructible environments, and synergistic team-up abilities.",
+    "Similar To / AAA Alternative": "Overwatch 2, Paladins",
+    "Personal Rating / Notes": "Regular seasonal roster updates.",
+    "Steam App ID": 2767030
+  },
+  {
+    "Game Title": "Aion 2",
+    "Play Mode": "Online",
+    "Status / Availability": "Full Game (Steam / NCSoft)",
+    "Genre / Style": "Unreal Engine 5 MMORPG",
+    "Key Features & Why It's Awesome": "Aerial combat focus across massive open battlefields; free-to-play on Steam.",
+    "Similar To / AAA Alternative": "World of Warcraft, Guild Wars 2",
+    "Personal Rating / Notes": "[Add your thoughts]",
+    "Steam App ID": 3393110
+  },
+  {
+    "Game Title": "Asphalt Legends",
+    "Play Mode": "Online & Offline",
+    "Status / Availability": "Full Game (Steam)",
+    "Genre / Style": "Arcade Racing",
+    "Key Features & Why It's Awesome": "Fast-paced, high-octane arcade racing with real-world hypercars and dynamic tracks.",
+    "Similar To / AAA Alternative": "Need for Speed, Burnout",
+    "Personal Rating / Notes": "[Add your thoughts]",
+    "Steam App ID": 1815780
+  },
+  {
+    "Game Title": "Where Winds Meet",
+    "Play Mode": "Online & Offline",
+    "Status / Availability": "Upcoming (Steam)",
+    "Genre / Style": "Wuxia Action RPG",
+    "Key Features & Why It's Awesome": "Epic open-world martial arts action featuring fluid platforming and combat.",
+    "Similar To / AAA Alternative": "Ghost of Tsushima, Assassin's Creed",
+    "Personal Rating / Notes": "[Add your thoughts]",
+    "Steam App ID": 3804320
+  },
+  {
+    "Game Title": "Granblue Fantasy: Relink (Demo)",
+    "Play Mode": "Online & Offline",
+    "Status / Availability": "Free Demo (Steam)",
+    "Genre / Style": "Action RPG",
+    "Key Features & Why It's Awesome": "Free playable demo featuring anime-style action combat and boss raid battles.",
+    "Similar To / AAA Alternative": "Tales of series, Monster Hunter",
+    "Personal Rating / Notes": "[Add your thoughts]",
+    "Steam App ID": 4196050
+  },
+  {
+    "Game Title": "Elta Defy All Gods (Demo)",
+    "Play Mode": "Offline",
+    "Status / Availability": "Free Demo (Steam)",
+    "Genre / Style": "Action-Platformer",
+    "Key Features & Why It's Awesome": "Fluid melee brawler/Metroidvania with a dragon-god companion.",
+    "Similar To / AAA Alternative": "Hollow Knight, Dead Cells",
+    "Personal Rating / Notes": "[Add your thoughts]",
+    "Steam App ID": 4654930
+  },
+  {
+    "Game Title": "Tales of Arise (Demo)",
+    "Play Mode": "Offline",
+    "Status / Availability": "Free Demo (Steam)",
+    "Genre / Style": "JRPG",
+    "Key Features & Why It's Awesome": "Free playable trial showcasing dynamic \"Linear Motion\" action combat and story.",
+    "Similar To / AAA Alternative": "Final Fantasy XVI, Xenoblade",
+    "Personal Rating / Notes": "[Add your thoughts]",
+    "Steam App ID": 1458040
+  },
+  {
+    "Game Title": "Wuthering Waves",
+    "Play Mode": "Online",
+    "Status / Availability": "Free to Play (Steam)",
+    "Genre / Style": "Open-World Action RPG",
+    "Key Features & Why It's Awesome": "Fast-paced combat with dodging, parrying, and Echo collection mechanics.",
+    "Similar To / AAA Alternative": "Genshin Impact, Devil May Cry",
+    "Personal Rating / Notes": "[Add your thoughts]",
+    "Steam App ID": 3513350
+  },
+  {
+    "Game Title": "Phantasy Star Online 2: New Genesis",
+    "Play Mode": "Online",
+    "Status / Availability": "Full Game (Steam)",
+    "Genre / Style": "Sci-Fi Action MMORPG",
+    "Key Features & Why It's Awesome": "Open-field action-oriented combat with futuristic sci-fi customization.",
+    "Similar To / AAA Alternative": "Warframe, Monster Hunter",
+    "Personal Rating / Notes": "[Add your thoughts]",
+    "Steam App ID": 1056640
+  },
+  {
+    "Game Title": "Once Human",
+    "Play Mode": "Online",
+    "Status / Availability": "Full Game (Steam)",
+    "Genre / Style": "Multiplayer Survival / Sandbox",
+    "Key Features & Why It's Awesome": "Post-apocalyptic survival shooter featuring base-building and weird monster encounters.",
+    "Similar To / AAA Alternative": "The Division, Rust",
+    "Personal Rating / Notes": "[Add your thoughts]",
+    "Steam App ID": 2139460
+  },
+  {
+    "Game Title": "Fortnite",
+    "Play Mode": "Online",
+    "Status / Availability": "Free to Play (Epic Games)",
+    "Genre / Style": "Battle Royale / Sandbox",
+    "Key Features & Why It's Awesome": "Massive pop-culture battle royale, creative building, and endless custom game modes.",
+    "Similar To / AAA Alternative": "PUBG, Apex Legends",
+    "Personal Rating / Notes": "[Add your thoughts]"
+  },
+  {
+    "Game Title": "Blood Strike",
+    "Play Mode": "Online",
+    "Status / Availability": "Full Game (Steam / NetEase)",
+    "Genre / Style": "Mobile/PC FPS",
+    "Key Features & Why It's Awesome": "Lightweight, fast-paced battle royale optimized for high FPS and smooth gunplay.",
+    "Similar To / AAA Alternative": "Call of Duty: Warzone Mobile",
+    "Personal Rating / Notes": "[Add your thoughts]",
+    "Steam App ID": 3199170
+  },
+  {
+    "Game Title": "Genshin Impact",
+    "Play Mode": "Online",
+    "Status / Availability": "Free to Play (PC Launcher / Epic)",
+    "Genre / Style": "Open-World Action RPG",
+    "Key Features & Why It's Awesome": "Massive elemental combat system, deep lore, exploration, and constant updates.",
+    "Similar To / AAA Alternative": "The Legend of Zelda: Breath of the Wild",
+    "Personal Rating / Notes": "[Add your thoughts]"
+  },
+  {
+    "Game Title": "The Seven Deadly Sins: Origin",
+    "Play Mode": "Online",
+    "Status / Availability": "Upcoming (Steam / Multiplatform)",
+    "Genre / Style": "Anime Action RPG",
+    "Key Features & Why It's Awesome": "Open-world anime exploration and team combat set in the Britannia universe.",
+    "Similar To / AAA Alternative": "Genshin Impact, Dragon Ball Z: Kakarot",
+    "Personal Rating / Notes": "[Add your thoughts]",
+    "Steam App ID": 3679080
+  },
+  {
+    "Game Title": "Arknights: Endfield",
+    "Play Mode": "Online & Offline",
+    "Status / Availability": "Upcoming (Steam / PC)",
+    "Genre / Style": "Sci-Fi Real-Time Strategy RPG",
+    "Key Features & Why It's Awesome": "Real-time tactical combat mixed with base expansion on an alien planet.",
+    "Similar To / AAA Alternative": "XCOM, Genshin Impact",
+    "Personal Rating / Notes": "[Add your thoughts]",
+    "Steam App ID": 4732690
+  },
+  {
+    "Game Title": "Destiny 2 (New Light)",
+    "Play Mode": "Online",
+    "Status / Availability": "Full Game (Steam)",
+    "Genre / Style": "Sci-Fi Looter Shooter FPS",
+    "Key Features & Why It's Awesome": "Top-tier shooting mechanics, immersive sci-fi campaigns, strikes, and PvP crucible.",
+    "Similar To / AAA Alternative": "Halo, Borderlands 3",
+    "Personal Rating / Notes": "[Add your thoughts]",
+    "Steam App ID": 1085660
+  },
+  {
+    "Game Title": "Paladins",
+    "Play Mode": "Online",
+    "Status / Availability": "Full Game (Steam)",
+    "Genre / Style": "Fantasy Hero Shooter",
+    "Key Features & Why It's Awesome": "Champions with custom card-loadout deck building to tune speed, cooldowns, and health.",
+    "Similar To / AAA Alternative": "Overwatch 2, Team Fortress 2",
+    "Personal Rating / Notes": "[Add your thoughts]",
+    "Steam App ID": 444090
+  },
+  {
+    "Game Title": "Pyrene (Demo)",
+    "Play Mode": "Offline",
+    "Status / Availability": "Free Demo (Steam)",
+    "Genre / Style": "Roguelike Deckbuilder",
+    "Key Features & Why It's Awesome": "Tactical grid combat mixing dungeon crawling with deep deck strategy.",
+    "Similar To / AAA Alternative": "Slay the Spire, Inscryption",
+    "Personal Rating / Notes": "[Add your thoughts]",
+    "Steam App ID": 2468100
+  },
+  {
+    "Game Title": "Enlisted",
+    "Play Mode": "Online",
+    "Status / Availability": "Full Game (Steam)",
+    "Genre / Style": "WW2 Tactical Squad FPS",
+    "Key Features & Why It's Awesome": "Massive infantry and vehicle battles where you command an AI squad in real-time.",
+    "Similar To / AAA Alternative": "Battlefield V, Hell Let Loose",
+    "Personal Rating / Notes": "[Add your thoughts]",
+    "Steam App ID": 2051620
+  },
+  {
+    "Game Title": "TrackMania",
+    "Play Mode": "Online & Offline",
+    "Status / Availability": "Free Starter Edition (Steam / Ubisoft)",
+    "Genre / Style": "Precision Time-Trial Racing",
+    "Key Features & Why It's Awesome": "Ultra-smooth track mechanics, leaderboards, and custom community track builders.",
+    "Similar To / AAA Alternative": "Need for Speed, Forza Horizon",
+    "Personal Rating / Notes": "[Add your thoughts]",
+    "Steam App ID": 2225070
+  },
+  {
+    "Game Title": "SCP: Secret Laboratory",
+    "Play Mode": "Online",
+    "Status / Availability": "Full Game (Steam)",
+    "Genre / Style": "Multiplayer Horror FPS",
+    "Key Features & Why It's Awesome": "Chaotic multiplayer game where players roleplay as guards, scientists, or escaped monsters.",
+    "Similar To / AAA Alternative": "Dead by Daylight, Phasmophobia",
+    "Personal Rating / Notes": "[Add your thoughts]",
+    "Steam App ID": 700330
+  },
+  {
+    "Game Title": "World of Tanks",
+    "Play Mode": "Online",
+    "Status / Availability": "Full Game (Steam)",
+    "Genre / Style": "Vehicle Combat Simulator",
+    "Key Features & Why It's Awesome": "Strategic mid-century armored warfare with realistic ballistics, armor angling, and tactical positioning.",
+    "Similar To / AAA Alternative": "War Thunder",
+    "Personal Rating / Notes": "[Add your thoughts]",
+    "Steam App ID": 1407200
+  },
+  {
+    "Game Title": "War Thunder",
+    "Play Mode": "Online & Offline",
+    "Status / Availability": "Full Game (Steam)",
+    "Genre / Style": "Vehicle Combat (Air/Land/Sea)",
+    "Key Features & Why It's Awesome": "Detailed damage models for hundreds of historical planes, tanks, and ships; includes AI battles.",
+    "Similar To / AAA Alternative": "World of Warships, Ace Combat",
+    "Personal Rating / Notes": "[Add your thoughts]",
+    "Steam App ID": 236390
+  },
+  {
+    "Game Title": "Eve Online",
+    "Play Mode": "Online",
+    "Status / Availability": "Full Game (Steam)",
+    "Genre / Style": "Sci-Fi Space MMORPG",
+    "Key Features & Why It's Awesome": "Massive sandbox economy, fleet battles with thousands of real players, and player-run empires.",
+    "Similar To / AAA Alternative": "Star Citizen, Elite Dangerous",
+    "Personal Rating / Notes": "[Add your thoughts]",
+    "Steam App ID": 8500
+  },
+  {
+    "Game Title": "Sven Co-op",
+    "Play Mode": "Online & Offline",
+    "Status / Availability": "Full Game (Steam)",
+    "Genre / Style": "Co-Op Action FPS",
+    "Key Features & Why It's Awesome": "Play classic GoldSrc engine custom campaigns and retro Half-Life maps together; supports bots.",
+    "Similar To / AAA Alternative": "Half-Life, Left 4 Dead",
+    "Personal Rating / Notes": "[Add your thoughts]",
+    "Steam App ID": 225840
+  },
+  {
+    "Game Title": "Delta Force: Hawk Ops",
+    "Play Mode": "Online",
+    "Status / Availability": "Full Game (Steam)",
+    "Genre / Style": "Modern Tactical FPS",
+    "Key Features & Why It's Awesome": "Large-scale tactical warfare with land/air vehicles and intense extraction modes.",
+    "Similar To / AAA Alternative": "Call of Duty: Warzone, Battlefield 2042",
+    "Personal Rating / Notes": "[Add your thoughts]",
+    "Steam App ID": 2507950
+  },
+  {
+    "Game Title": "Splitgate: Arena Reloaded",
+    "Play Mode": "Online & Offline",
+    "Status / Availability": "Full Game (Steam)",
+    "Genre / Style": "Fast-Paced Portal FPS",
+    "Key Features & Why It's Awesome": "High-speed arena shooting combined with instant portal traversal for crazy flank plays; bot support.",
+    "Similar To / AAA Alternative": "Halo, Portal 2",
+    "Personal Rating / Notes": "[Add your thoughts]",
+    "Steam App ID": 2918300
+  },
+  {
+    "Game Title": "SUPERVIVE",
+    "Play Mode": "Online",
+    "Status / Availability": "Full Game (Steam)",
+    "Genre / Style": "High-Speed Hero Royale / MOBA",
+    "Key Features & Why It's Awesome": "Combines fast-paced air mobility, intense team fights, and battle royale survival.",
+    "Similar To / AAA Alternative": "Apex Legends, League of Legends",
+    "Personal Rating / Notes": "[Add your thoughts]",
+    "Steam App ID": 1283700
+  },
+  {
+    "Game Title": "Naraka: Bladepoint",
+    "Play Mode": "Online",
+    "Status / Availability": "Full Game (Steam)",
+    "Genre / Style": "Fast Martial Arts Battle Royale",
+    "Key Features & Why It's Awesome": "High-speed acrobatic movement, grappling hooks, and fluid melee combat mechanics.",
+    "Similar To / AAA Alternative": "Sekiro, Devil May Cry",
+    "Personal Rating / Notes": "[Add your thoughts]",
+    "Steam App ID": 1203220
+  },
+  {
+    "Game Title": "Super Animal Royale",
+    "Play Mode": "Online & Offline",
+    "Status / Availability": "Full Game (Steam)",
+    "Genre / Style": "Top-Down Fast-Paced Shooter",
+    "Key Features & Why It's Awesome": "Ultra-fast 64-player 2D battle royale featuring quick movement and instant action; bot matches supported.",
+    "Similar To / AAA Alternative": "Enter the Gungeon, Hotline Miami",
+    "Personal Rating / Notes": "[Add your thoughts]",
+    "Steam App ID": 843380
+  },
+  {
+    "Game Title": "Battle Crush",
+    "Play Mode": "Online",
+    "Status / Availability": "Full Game (Steam)",
+    "Genre / Style": "Fast Action Brawler",
+    "Key Features & Why It's Awesome": "High-energy, short-round combat where you knock opponents off shrinking arenas.",
+    "Similar To / AAA Alternative": "Super Smash Bros, Brawlhalla",
+    "Personal Rating / Notes": "[Add your thoughts]",
+    "Steam App ID": 2287920
+  },
+  {
+    "Game Title": "Splitgate",
+    "Play Mode": "Online & Offline",
+    "Status / Availability": "Full Game (Steam)",
+    "Genre / Style": "Fast Arena Sci-Fi FPS",
+    "Key Features & Why It's Awesome": "Relentless movement and rapid-fire gunplay driven by real-time spatial portal placement.",
+    "Similar To / AAA Alternative": "Unreal Tournament, Quake Champions",
+    "Personal Rating / Notes": "[Add your thoughts]",
+    "Steam App ID": 677620
+  },
+  {
+    "Game Title": "Quake Champions",
+    "Play Mode": "Online & Offline",
+    "Status / Availability": "Full Game (Steam)",
+    "Genre / Style": "Hyper-Fast Arena FPS",
+    "Key Features & Why It's Awesome": "Pure twitch-reflex movement, rocket jumping, and high-velocity arena gunplay; practice vs bots.",
+    "Similar To / AAA Alternative": "DOOM Eternal, Quake III Arena",
+    "Personal Rating / Notes": "[Add your thoughts]",
+    "Steam App ID": 611500
+  },
+  {
+    "Game Title": "Super Mecha Champions",
+    "Play Mode": "Online",
+    "Status / Availability": "Full Game (Steam)",
+    "Genre / Style": "High-Speed Mecha Battle Royale",
+    "Key Features & Why It's Awesome": "High-mobility mecha air dashes, rapid transformations, and fast anime-style team fights.",
+    "Similar To / AAA Alternative": "Titanfall 2, Armored Core VI",
+    "Personal Rating / Notes": "[Add your thoughts]",
+    "Steam App ID": 1368910
+  },
+  {
+    "Game Title": "Snowbreak: Containment Zone",
+    "Play Mode": "Online",
+    "Status / Availability": "Full Game (Steam)",
+    "Genre / Style": "3D Anime Third-Person Shooter",
+    "Key Features & Why It's Awesome": "Fast-paced 3D gunplay combined with anime hero skills, dodge rolls, and massive boss encounters.",
+    "Similar To / AAA Alternative": "The Division, Genshin Impact (TPS style)",
+    "Personal Rating / Notes": "[Add your thoughts]",
+    "Steam App ID": 2668080
+  },
+  {
+    "Game Title": "Strinova",
+    "Play Mode": "Online",
+    "Status / Availability": "Full Game (Steam)",
+    "Genre / Style": "3D Anime Tactical Hero Shooter",
+    "Key Features & Why It's Awesome": "Fast-paced tactical shooting where 3D character models can transform into paper-thin forms to glide and dodge bullets.",
+    "Similar To / AAA Alternative": "Valorant, Overwatch 2",
+    "Personal Rating / Notes": "[Add your thoughts]",
+    "Steam App ID": 1282270
+  },
+  {
+    "Game Title": "Tower of Fantasy",
+    "Play Mode": "Online",
+    "Status / Availability": "Full Game (Steam)",
+    "Genre / Style": "3D Open-World Sci-Fi Action RPG",
+    "Key Features & Why It's Awesome": "Sci-Fi open-world featuring double jumps, jetpacks, wall climbing, and real-time weapon swapping.",
+    "Similar To / AAA Alternative": "Genshin Impact, Cyberpunk 2077",
+    "Personal Rating / Notes": "[Add your thoughts]",
+    "Steam App ID": 2064650
+  },
+  {
+    "Game Title": "Arena Breakout Infinite\n",
+    "Play Mode": "Online",
+    "Status / Availability": "Full Game (Steam)",
+    "Genre / Style": "Modern Tactical FPS",
+    "Key Features & Why It's Awesome": "high-stakes tactical extraction shooter.  Fight, loot, and extract—or lose it all.",
+    "Similar To / AAA Alternative": "Delta Force",
+    "Steam App ID": 2073620
+  },
+  {
+    "Game Title": "MY HERO ULTRA RUMBLE",
+    "Play Mode": "Online",
+    "Status / Availability": "Full Game (Steam)",
+    "Genre / Style": "Anime Action RPG",
+    "Key Features & Why It's Awesome": "team up and fight to be the last ones standing in the new 24-player Battle Royale "
+  },
+  {
+    "Game Title": "eFootball",
+    "Play Mode": "Online",
+    "Status / Availability": "Full Game (Steam)",
+    "Genre / Style": "Exhilarating soccer game",
+    "Key Features & Why It's Awesome": "Nice Football game",
+    "Steam App ID": 1665460
+  },
+  {
+    "Game Title": "Honkai Impact 3rd",
+    "Play Mode": "Online",
+    "Status / Availability": "Full Game (Steam)",
+    "Genre / Style": "Anime Action",
+    "Key Features & Why It's Awesome": "Experience next-gen real-time action.",
+    "Steam App ID": 1671200
+  },
+  {
+    "Game Title": "Mecha BREAK",
+    "Play Mode": "Online",
+    "Status / Availability": "Full Game (Steam)",
+    "Genre / Style": "multiplayer third-person shoote",
+    "Key Features & Why It's Awesome": "Has  three intense game modes filled with ground and aerial combat",
+    "Steam App ID": 2452280
+  },
+  {
+    "Game Title": "Soul Land Awakening World",
+    "Play Mode": "Online",
+    "Status / Availability": "Full Game (Steam)",
+    "Genre / Style": "MMORPG",
+    "Steam App ID": 4584110
+  }
+]
