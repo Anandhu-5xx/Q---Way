@@ -241,6 +241,26 @@
     </div>
 
     <script>
+        // CURATED AESTHETIC PLACEHOLDER IMAGE ARRAY
+        const fallbackImages = [
+            "https://images.unsplash.com/photo-1762219214808-154d74e0d761?w=600&auto=format&fit=crop&q=60",
+            "https://images.unsplash.com/photo-1616588589676-62b3bd4ff6d2?w=1000&auto=format&fit=crop&q=60",
+            "https://plus.unsplash.com/premium_photo-1682141878168-5dace8e1785d?w=1000&auto=format&fit=crop&q=60",
+            "https://images.unsplash.com/photo-1612287230202-1ff1d85d1bdf?w=1000&auto=format&fit=crop&q=60",
+            "https://images.unsplash.com/photo-1775410633801-5d7997f795c6?w=1000&auto=format&fit=crop&q=60",
+            "https://images.unsplash.com/photo-1775410632949-e220dfd7746b?w=1000&auto=format&fit=crop&q=60",
+            "https://plus.unsplash.com/premium_photo-1682088486926-42e23e19f421?w=1000&auto=format&fit=crop&q=60",
+            "https://images.unsplash.com/photo-1534423861386-85a16f5d13fd?w=1000&auto=format&fit=crop&q=60",
+            "https://plus.unsplash.com/premium_photo-1674374443275-20dae04975ac?w=1000&auto=format&fit=crop&q=60",
+            "https://images.unsplash.com/photo-1542751371-adc38448a05e?w=1000&auto=format&fit=crop&q=60"
+        ];
+
+        // Helper function to pick a random aesthetic background
+        function getRandomFallback() {
+            const randomIndex = Math.floor(Math.random() * fallbackImages.length);
+            return fallbackImages[randomIndex];
+        }
+
         const CATEGORIES = ["Featured", "Action-Adventure", "Anime", "RPG.MMORPG", "SC-FI", "Survival", "Shooter", "Open World", "Fast-Paced", "Epic Games", "Steam"];
 
         const FALLBACK_CATALOG = [
@@ -401,7 +421,7 @@
             }
 
             if (platform === 'Epic Games') {
-                if (!thumbnail) thumbnail = "https://cdn2.unrealengine.com/diesel/product/fortnite/home/EGS_Fortnite_EpicGames_S1_2560x1440-2560x1440-a0f12c1b.jpg";
+                if (!thumbnail) thumbnail = getRandomFallback();
                 if (!videoUrl) videoUrl = "https://cdn2.unrealengine.com/fortnite-chapter-4-season-4-trailer-1920x1080-681b93f6.mp4";
             }
 
@@ -417,7 +437,7 @@
                 notes: getProp(r, ['Personal Rating / Notes', 'Notes', 'notes']) || '',
                 platform: platform,
                 storeUrl: getProp(r, ['Store URL', 'Link', 'storeUrl']) || (platform === 'Epic Games' ? `https://store.epicgames.com/en-US/browse?q=${encodeURIComponent(title)}` : `https://store.steampowered.com/app/${appId}/`),
-                thumbnail: thumbnail || `https://commons.wikimedia.org/wiki/Special:FilePath/${encodeURIComponent(title)}.jpg`,
+                thumbnail: thumbnail || getRandomFallback(),
                 videoUrl: videoUrl
             };
         }
@@ -425,7 +445,7 @@
         function buildCatalogFromDataset() {
             gamesData = FALLBACK_CATALOG.map((item, idx) => {
                 const appId = item.app_id;
-                let thumbnail = appId ? `https://cdn.cloudflare.steamstatic.com/steam/apps/${appId}/header.jpg` : "";
+                let thumbnail = appId ? `https://cdn.cloudflare.steamstatic.com/steam/apps/${appId}/header.jpg` : getRandomFallback();
                 let videoUrl = appId ? `https://cdn.cloudflare.steamstatic.com/steam/apps/${appId}/movie480.mp4` : "";
                 let storeUrl = appId ? `https://store.steampowered.com/app/${appId}/` : `#`;
 
@@ -498,7 +518,6 @@
 
             if (!gamesData || gamesData.length === 0) return;
 
-            // 1. Build Vocabulary of Features across Catalog
             const gameVectors = gamesData.map(game => {
                 const tokens = [
                     ...tokenize(game.genre),
@@ -513,10 +532,8 @@
                 return { game: game, vector: tf };
             });
 
-            // 2. Build Weighted User Preference Vector
             const userVector = {};
 
-            // Higher weights for explicit user interactions
             wishlist.forEach(w => {
                 const tokens = [...tokenize(w.genre), ...tokenize(w.similarTo), ...tokenize(w.features)];
                 tokens.forEach(t => { userVector[t] = (userVector[t] || 0) + 5; });
@@ -532,29 +549,22 @@
                 tokens.forEach(t => { userVector[t] = (userVector[t] || 0) + 2; });
             });
 
-            // 3. Compute Cosine Similarity Score for each Game
             const scoredGames = gameVectors.map(item => {
                 const score = calculateCosineSimilarity(userVector, item.vector);
                 return { game: item.game, score: score };
             });
 
-            // 4. Separate into High Match vs Exploration Pool
-            // Sort by Cosine Score Descending
             scoredGames.sort((a, b) => b.score - a.score);
 
             let personalizedPicks = [];
             let varietyPicks = [];
 
             if (Object.keys(userVector).length > 0) {
-                // Top Cosine scores (Personalized)
                 personalizedPicks = scoredGames.slice(0, 2).map(x => ({ ...x.game, matchScore: (x.score * 100).toFixed(0) }));
-                
-                // Low Cosine scores / Different Genres (Variety)
                 const remaining = scoredGames.slice(2);
                 remaining.sort(() => 0.5 - Math.random());
                 varietyPicks = remaining.slice(0, 2).map(x => ({ ...x.game, matchScore: (x.score * 100).toFixed(0) }));
             } else {
-                // Fallback for cold start (no user history yet)
                 const shuffled = [...gamesData].sort(() => 0.5 - Math.random());
                 personalizedPicks = shuffled.slice(0, 2).map(g => ({ ...g, matchScore: '95' }));
                 varietyPicks = shuffled.slice(2, 4).map(g => ({ ...g, matchScore: 'Variety' }));
@@ -573,7 +583,7 @@
                     <div class="glass-card rounded-2xl overflow-hidden flex flex-col justify-between p-3 border ${isVarietyTile ? 'border-neonPurple/40 bg-neonPurple/5' : 'border-neonCyan/40 bg-neonCyan/5'} group">
                         <div>
                             <div class="relative aspect-video rounded-xl overflow-hidden mb-2.5 bg-gray-950 cursor-pointer" onclick="openGameModal(${game.id})">
-                                <img src="${game.thumbnail}" alt="${game.title}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" onerror="if(this.src.includes('header.jpg') && '${game.appId}'){ this.src='https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/${game.appId}/capsule_616x353.jpg'; }">
+                                <img src="${game.thumbnail}" alt="${game.title}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" onerror="this.onerror=null; this.src=getRandomFallback();">
                                 <span class="absolute top-2 left-2 text-[10px] px-2 py-0.5 rounded-md glass-panel ${isVarietyTile ? 'text-neonPurple border-neonPurple/30' : 'text-neonCyan border-neonCyan/30'} font-bold font-mono">
                                     ${reasonLabel}
                                 </span>
@@ -616,7 +626,7 @@
                         <div class="relative aspect-video bg-gray-950 cursor-pointer overflow-hidden" ${hasVideo ? 'onmouseenter="playVid(this)" onmouseleave="stopVid(this)"' : ''} onclick="openGameModal(${game.id})">
                             <img src="${game.thumbnail}" alt="${game.title}" 
                                  class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" 
-                                 onerror="if(this.src.includes('header.jpg') && '${game.appId}'){ this.src='https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/${game.appId}/capsule_616x353.jpg'; } else { this.src='https://images.unsplash.com/photo-1542751371-adc38448a05e?w=500&q=80'; }">
+                                 onerror="this.onerror=null; this.src=getRandomFallback();">
                             ${hasVideo ? `<video src="${game.videoUrl}" muted loop playsinline class="absolute inset-0 w-full h-full object-cover opacity-0 transition-opacity duration-300 pointer-events-none"></video>` : ''}
                             
                             <div class="absolute top-2.5 left-2.5 px-2.5 py-1 rounded-lg glass-panel text-[11px] font-bold flex items-center gap-1.5">
@@ -694,7 +704,7 @@
         function renderSidebarItem(game, type) {
             return `
                 <div class="flex items-center gap-3 p-2.5 rounded-xl glass-card">
-                    <img src="${game.thumbnail}" class="w-12 h-12 object-cover rounded-lg" onerror="if(this.src.includes('header.jpg') && '${game.appId}'){ this.src='https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/${game.appId}/capsule_616x353.jpg'; }">
+                    <img src="${game.thumbnail}" class="w-12 h-12 object-cover rounded-lg" onerror="this.onerror=null; this.src=getRandomFallback();">
                     <div class="flex-1 min-w-0">
                         <h4 class="font-bold text-sm truncate">${game.title}</h4>
                         <span class="text-xs text-gray-400">${game.genre}</span>
@@ -768,7 +778,7 @@
             if (!game) return;
             document.getElementById('modal-body').innerHTML = `
                 <div class="aspect-video rounded-xl overflow-hidden mb-4 relative bg-black">
-                    <img src="${game.thumbnail}" alt="${game.title}" class="w-full h-full object-cover" onerror="if(this.src.includes('header.jpg') && '${game.appId}'){ this.src='https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/${game.appId}/capsule_616x353.jpg'; }">
+                    <img src="${game.thumbnail}" alt="${game.title}" class="w-full h-full object-cover" onerror="this.onerror=null; this.src=getRandomFallback();">
                 </div>
                 <div class="flex items-center justify-between mb-2">
                     <span class="text-xs px-2.5 py-1 rounded-full bg-neonCyan/10 text-neonCyan border border-neonCyan/20 font-bold">${game.genre}</span>
