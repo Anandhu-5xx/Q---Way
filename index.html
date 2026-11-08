@@ -417,7 +417,7 @@
                 notes: getProp(r, ['Personal Rating / Notes', 'Notes', 'notes']) || '',
                 platform: platform,
                 storeUrl: getProp(r, ['Store URL', 'Link', 'storeUrl']) || (platform === 'Epic Games' ? `https://store.epicgames.com/en-US/browse?q=${encodeURIComponent(title)}` : `https://store.steampowered.com/app/${appId}/`),
-                thumbnail: thumbnail || `https://commons.wikimedia.org/wiki/Special:FilePath/${encodeURIComponent(title)}.jpg`;,
+                thumbnail: thumbnail || `https://commons.wikimedia.org/wiki/Special:FilePath/${encodeURIComponent(title)}.jpg`,
                 videoUrl: videoUrl
             };
         }
