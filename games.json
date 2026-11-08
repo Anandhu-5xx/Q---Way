@@ -543,5 +543,50 @@
     "Similar To / AAA Alternative": "Genshin Impact, Persona 5",
     "Personal Rating / Notes": "Vibrant anime visuals and deep turn-based strategic combat.",
     "Steam App ID": ""
+  },
+  {
+    "Game Title": "Warhammer 40,000: Speed Freeks",
+    "Play Mode": "Online",
+    "Status / Availability": "Full Game (Steam)",
+    "Genre / Style": "Vehicular Combat / Action",
+    "Key Features & Why It's Awesome": "High-octane Ork vehicular mayhem featuring brutal speed, heavy weaponry, and explosive team combat.",
+    "Similar To / AAA Alternative": "Twisted Metal, Rocket League, Crossout",
+    "Personal Rating / Notes": "Fast-paced vehicular shooter set in the Warhammer 40K universe.",
+    "Steam App ID": 2078450,
+    "Header Image URL": "https://cdn.cloudflare.steamstatic.com/steam/apps/2078450/header.jpg"
+  },
+  {
+    "Game Title": "XDefiant",
+    "Play Mode": "Online",
+    "Status / Availability": "Free to Play (Ubisoft Connect)",
+    "Genre / Style": "Arcade FPS / Hero Shooter",
+    "Key Features & Why It's Awesome": "Fast-paced arena shooter featuring factions from iconic Ubisoft franchises with unique ultra abilities.",
+    "Similar To / AAA Alternative": "Call of Duty, Valorant, Overwatch 2",
+    "Personal Rating / Notes": "Ubisoft arena FPS with no skill-based matchmaking in casual play.",
+    "Steam App ID": "",
+    "Header Image URL": "https://images.unsplash.com/photo-1542751371-adc38448a05e?w=1000&auto=format&fit=crop&q=60"
+  },
+  {
+    "Game Title": "RUSH",
+    "Play Mode": "Online & Offline",
+    "Status / Availability": "Full Game (Steam)",
+    "Genre / Style": "Wingsuit Precision Racing",
+    "Key Features & Why It's Awesome": "High-speed wingsuit proximity flying down mountain slopes with precision time-trial mechanics.",
+    "Similar To / AAA Alternative": "Riders Republic, Steep",
+    "Personal Rating / Notes": "Extreme speed proximity racing simulator.",
+    "Steam App ID": 844040,
+    "Header Image URL": "https://cdn.cloudflare.steamstatic.com/steam/apps/844040/header.jpg"
+  },
+  {
+    "Game Title": "UNDEFEATED",
+    "Play Mode": "Offline",
+    "Status / Availability": "Full Game (Steam)",
+    "Genre / Style": "Open-World Superhero Action",
+    "Key Features & Why It's Awesome": "Fly freely through a city, put out fires, and battle boss villains with unlimited flight and super strength.",
+    "Similar To / AAA Alternative": "Superman, Infamous, Prototype",
+    "Personal Rating / Notes": "Created by Japanese students; incredibly smooth flight and power mechanics.",
+    "Steam App ID": 1116960,
+    "Header Image URL": "https://cdn.cloudflare.steamstatic.com/steam/apps/1116960/header.jpg"
   }
+
 ]
