@@ -697,7 +697,149 @@
   "Similar To / AAA Alternative": "Code Vein, Devil May Cry 5, Astral Chain",
   "Personal Rating / Notes": "[Add your thoughts]",
   "Steam App ID": "775500"
-}
+},
+  {
+  "Game Title": "Predecessor",
+  "Play Mode": "Online Multiplayer (5v5 Team Battles)",
+  "Status / Availability": "Full Game (Steam)",
+  "Genre / Style": "Third-Person Action MOBA / Sci-Fi Shooter",
+  "Key Features & Why It's Awesome": "Combines deep MOBA strategy and item builds with fast-paced, over-the-shoulder third-person shooter action, featuring stunning Unreal Engine graphics and smooth performance on RTX 3050.",
+  "Similar To / AAA Alternative": "Smite, Paragon, Overwatch 2",
+  "Personal Rating / Notes": "[Add your thoughts]",
+  "Steam App ID": "961200"
+},
+  [
+  {
+    "Game Title": "FINAL FANTASY XIV Online Free Trial",
+    "Play Mode": "Online",
+    "Status / Availability": "Free Trial / Demo (Steam)",
+    "Genre / Style": "Fantasy Action-Adventure MMORPG",
+    "Key Features & Why It's Awesome": "Play the entire critically acclaimed base game and first two expansions up to level 70 with no playtime limits, featuring rich story quests, raids, and smooth performance.",
+    "Similar To / AAA Alternative": "World of Warcraft, Guild Wars 2",
+    "Personal Rating / Notes": "[Add your thoughts]",
+    "Steam App ID": "312060"
+  },
+  {
+    "Game Title": "Resident Evil Requiem (Demo)",
+    "Play Mode": "Offline",
+    "Status / Availability": "Free Demo (Steam)",
+    "Genre / Style": "Survival Horror / Action-Adventure",
+    "Key Features & Why It's Awesome": "High-fidelity RE Engine survival horror showcase featuring tense exploration, atmospheric lighting, and DLSS/FSR optimization for smooth RTX 3050 gameplay.",
+    "Similar To / AAA Alternative": "Resident Evil Village, Silent Hill 2",
+    "Personal Rating / Notes": "[Add your thoughts]",
+    "Steam App ID": "4459100"
+  },
+  {
+    "Game Title": "Onimusha: Way of the Sword (Demo)",
+    "Play Mode": "Offline",
+    "Status / Availability": "Free Demo (Steam)",
+    "Genre / Style": "Dark Fantasy Samurai Action-Adventure",
+    "Key Features & Why It's Awesome": "Visceral sword-based combat, soul-absorbing mechanics, and cinematic dark feudal Japanese visuals powered by Capcom's RE Engine.",
+    "Similar To / AAA Alternative": "Sekiro: Shadows Die Twice, Ghost of Tsushima, Nioh 2",
+    "Personal Rating / Notes": "[Add your thoughts]",
+    "Steam App ID": "3974650"
+  },
+  {
+    "Game Title": "Stellar Blade™ Demo",
+    "Play Mode": "Offline",
+    "Status / Availability": "Free Demo (Steam)",
+    "Genre / Style": "Sci-Fi Hack-and-Slash Action-Adventure",
+    "Key Features & Why It's Awesome": "Ultra-fluid parry-and-dodge melee combat, stylish combos, and stunning post-apocalyptic sci-fi character and boss designs.",
+    "Similar To / AAA Alternative": "NieR:Automata, Devil May Cry 5, Sekiro",
+    "Personal Rating / Notes": "[Add your thoughts]",
+    "Steam App ID": "3564860"
+  },
+  {
+    "Game Title": "ReBlade: The Death Spiral (Demo)",
+    "Play Mode": "Offline",
+    "Status / Availability": "Free Demo (Steam)",
+    "Genre / Style": "Cyberpunk Action-Adventure / Hack-and-Slash",
+    "Key Features & Why It's Awesome": "Fast-paced cyber-action sword combat with sleek futuristic visuals, agile movement, and intense boss encounters.",
+    "Similar To / AAA Alternative": "Ghostrunner, Katana ZERO, Metal Gear Rising",
+    "Personal Rating / Notes": "[Add your thoughts]",
+    "Steam App ID": "4513800"
+  },
+  {
+    "Game Title": "PRAGMATA SKETCHBOOK - DEMO",
+    "Play Mode": "Offline",
+    "Status / Availability": "Free Demo (Steam)",
+    "Genre / Style": "Sci-Fi Action-Adventure",
+    "Key Features & Why It's Awesome": "Dystopian lunar sci-fi action-adventure built on the RE Engine with cutting-edge visuals, DLSS support, and unique dual-character gameplay mechanics.",
+    "Similar To / AAA Alternative": "Death Stranding, Returnal",
+    "Personal Rating / Notes": "[Add your thoughts]",
+    "Steam App ID": "4003800"
+  },
+  {
+    "Game Title": "Resident Evil 2 \"R.P.D. Demo\"",
+    "Play Mode": "Offline",
+    "Status / Availability": "Free Demo (Steam)",
+    "Genre / Style": "Survival Horror / Third-Person Action",
+    "Key Features & Why It's Awesome": "Explore the iconic Raccoon Police Department with photorealistic RE Engine graphics, tight over-the-shoulder shooting, and exceptional optimization.",
+    "Similar To / AAA Alternative": "The Last of Us Part I, Dead Space",
+    "Personal Rating / Notes": "[Add your thoughts]",
+    "Steam App ID": "1168280"
+  },
+  {
+    "Game Title": "13Z: The Zodiac Trials (Demo)",
+    "Play Mode": "Online & Offline",
+    "Status / Availability": "Free Demo (Steam)",
+    "Genre / Style": "Anime Action Roguelike / Hack-and-Slash",
+    "Key Features & Why It's Awesome": "Fast-paced, anime-inspired Eastern mythology action with stylish melee combos, build customization, and fluid combat.",
+    "Similar To / AAA Alternative": "Hades, Granblue Fantasy: Relink",
+    "Personal Rating / Notes": "[Add your thoughts]",
+    "Steam App ID": "3955140"
+  },
+  {
+    "Game Title": "Shadow of the Tomb Raider (Trial)",
+    "Play Mode": "Offline",
+    "Status / Availability": "Free Demo / Trial (Steam)",
+    "Genre / Style": "Cinematic Action-Adventure",
+    "Key Features & Why It's Awesome": "Lush jungle exploration, deadly tomb puzzles, stealth takedowns, and AAA cinematic presentation that runs smoothly on RTX 3050.",
+    "Similar To / AAA Alternative": "Uncharted: Legacy of Thieves Collection",
+    "Personal Rating / Notes": "[Add your thoughts]",
+    "Steam App ID": "974630"
+  },
+  {
+    "Game Title": "DRAGON BALL Z: KAKAROT (Demo)",
+    "Play Mode": "Offline",
+    "Status / Availability": "Free Demo (Steam)",
+    "Genre / Style": "Anime Open-World Action RPG",
+    "Key Features & Why It's Awesome": "High-speed aerial anime battles, iconic energy beam clashes, and semi-open world exploration faithful to the DBZ saga.",
+    "Similar To / AAA Alternative": "Dragon Ball Xenoverse 2, Naruto Shippuden: Ultimate Ninja Storm 4",
+    "Personal Rating / Notes": "[Add your thoughts]",
+    "Steam App ID": "1755070"
+  },
+  {
+    "Game Title": "FINAL FANTASY XVI DEMO",
+    "Play Mode": "Offline",
+    "Status / Availability": "Free Demo (Steam)",
+    "Genre / Style": "Dark Fantasy Action RPG / Spectacle Fighter",
+    "Key Features & Why It's Awesome": "Includes the full opening prologue (with save carry-over) plus the special 'Eikonic Challenge' mode showcasing fast, DMC-style combo combat.",
+    "Similar To / AAA Alternative": "Devil May Cry 5, Tales of Arise",
+    "Personal Rating / Notes": "[Add your thoughts]",
+    "Steam App ID": "2738000"
+  },
+  {
+    "Game Title": "Ghostrunner Demo",
+    "Play Mode": "Offline",
+    "Status / Availability": "Free Demo (Steam)",
+    "Genre / Style": "First-Person Cyberpunk Parkour Slasher",
+    "Key Features & Why It's Awesome": "Lightning-fast wall-running, grappling, bullet-deflecting, and one-hit-kill katana combat in a sleek neon cyberpunk tower.",
+    "Similar To / AAA Alternative": "Mirror's Edge Catalyst, Cyberpunk 2077 (Katana build)",
+    "Personal Rating / Notes": "[Add your thoughts]",
+    "Steam App ID": "1249200"
+  },
+  {
+    "Game Title": "Granblue Fantasy: Relink - Endless Ragnarok (Beta / Demo)",
+    "Play Mode": "Online & Offline",
+    "Status / Availability": "Free Demo / Playtest (Steam)",
+    "Genre / Style": "Anime Action RPG / Boss Raid Co-Op",
+    "Key Features & Why It's Awesome": "Expanded anime action-adventure experience featuring gorgeous painterly visuals, 4-player co-op quests, and high-speed party combat.",
+    "Similar To / AAA Alternative": "Tales of Arise, Monster Hunter Rise",
+    "Personal Rating / Notes": "[Add your thoughts]",
+    "Steam App ID": "4131170"
+  }
+]
 
 
 ]
