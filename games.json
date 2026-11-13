@@ -596,7 +596,108 @@
     "Key Features & Why It's Awesome": "Tactical strategic gameplay based on the iconic fantasy series.",
     "Similar To / AAA Alternative": "Total War, Crusader Kings III",
     "Personal Rating / Notes": "[Add your thoughts]",
-    "Steam App ID": ""
-  }
+    "Steam App ID": "1105420"
+  },
+  {
+    "Game Title": "Torque Drift",
+    "Play Mode": "Online Multiplayer & Single-Player Practice",
+    "Status / Availability": "Free-to-Play (Steam)",
+    "Genre / Style": "Street Drifting & Car Customization Racing",
+    "Key Features & Why It's Awesome": "Focused on tandem drift battles, realistic drifting physics, licensed real-world sponsors/parts, and deep visual and performance car tuning.",
+    "Similar To / AAA Alternative": "CarX Drift Racing Online, Need for Speed",
+    "Personal Rating / Notes": "[Add your thoughts]",
+    "Steam App ID": "1029550"
+  },
+  {
+    "Game Title": "Disney Speedstorm",
+    "Play Mode": "Online Multiplayer & Local Split-Screen",
+    "Status / Availability": "Free-to-Play (Steam / Epic Games)",
+    "Genre / Style": "Arcade Kart Racing",
+    "Key Features & Why It's Awesome": "Fast-paced combat racing with Disney and Pixar characters, unique character skills, dynamic tracks, and smooth performance on RTX 3050.",
+    "Similar To / AAA Alternative": "Mario Kart 8 Deluxe, Crash Team Racing",
+    "Personal Rating / Notes": "[Add your thoughts]",
+    "Steam App ID": "1537830"
+  },
+  {
+  "Game Title": "The Sims 4",
+  "Play Mode": "Single-Player (Offline-friendly after initial setup)",
+  "Status / Availability": "Free-to-Play Base Game (Steam / EA App)",
+  "Genre / Style": "Life Simulation & Home Building",
+  "Key Features & Why It's Awesome": "Create custom characters, build and decorate houses, manage careers and relationships, completely relaxed pace with low CPU heat.",
+  "Similar To / AAA Alternative": "Animal Crossing, Stardew Valley, inZOI",
+  "Personal Rating / Notes": "[Add your thoughts]",
+  "Steam App ID": "1222670"
+},
+  {
+  "Game Title": "Team Fortress 2",
+  "Play Mode": "Online Multiplayer (with Offline Practice vs. Bots)",
+  "Status / Availability": "Free-to-Play (Steam)",
+  "Genre / Style": "Class-Based First-Person Shooter (FPS)",
+  "Key Features & Why It's Awesome": "9 distinct playable classes, lighthearted art style, lightweight (~26 GB) with low CPU heat, and uses standard VAC (no kernel-level anti-cheat).",
+  "Similar To / AAA Alternative": "Overwatch 2, Marvel Rivals",
+  "Personal Rating / Notes": "[Add your thoughts]",
+  "Steam App ID": "440"
+},
+  {
+    "Game Title": "Marvel Contest of Champions",
+    "Play Mode": "Single-Player & Online Multiplayer",
+    "Status / Availability": "Free-to-Play (Steam / PC)",
+    "Genre / Style": "1v1 Arcade Superhero Fighting",
+    "Key Features & Why It's Awesome": "Fast-paced 1v1 duels with iconic Marvel heroes and villains, combo-based combat, signature special moves, and low CPU/GPU thermal load on RTX 3050.",
+    "Similar To / AAA Alternative": "Injustice 2, Marvel vs. Capcom",
+    "Personal Rating / Notes": "[Add your thoughts]",
+    "Steam App ID": "3127280"
+  },
+  {
+    "Game Title": "DRAGON BALL GEKISHIN SQUADRA",
+    "Play Mode": "Online Multiplayer (4v4 Team Battles)",
+    "Status / Availability": "Free-to-Play (Steam)",
+    "Genre / Style": "Team-Based Anime Arena Action / MOBA",
+    "Key Features & Why It's Awesome": "4v4 Dragon Ball battles with Damage, Tank, and Technical character roles, melee combos, signature energy blasts, and lightweight storage (~17 GB).",
+    "Similar To / AAA Alternative": "Dragon Ball Xenoverse 2, Pokémon UNITE",
+    "Personal Rating / Notes": "[Add your thoughts]",
+    "Steam App ID": "2072560"
+  },
+  {
+  "Game Title": "Guild Wars 2",
+  "Play Mode": "Online Multiplayer (Open-World PvE, PvP, & WvW)",
+  "Status / Availability": "Free-to-Play Base Game (Steam / ArenaNet)",
+  "Genre / Style": "Massively Multiplayer Online Action-Adventure RPG",
+  "Key Features & Why It's Awesome": "Fluid dodge-based real-time combat, gorgeous painterly fantasy environments, massive open regions to explore, and the entire level 1–80 base game campaign completely free with zero subscription fees.",
+  "Similar To / AAA Alternative": "Final Fantasy XIV, The Elder Scrolls Online",
+  "Personal Rating / Notes": "[Add your thoughts]",
+  "Steam App ID": "1284210"
+},
+  {
+  "Game Title": "Rogue Company",
+  "Play Mode": "Online Multiplayer (Third-Person Tactical & Objective Shooters)",
+  "Status / Availability": "Free-to-Play (Steam / Epic Games Store)",
+  "Genre / Style": "Third-Person Action Shooter",
+  "Key Features & Why It's Awesome": "Slick cinematic character models, fast-paced round-based objective gameplay, fluid third-person movement, and smooth performance on RTX 3050 with no crypto, NFTs, or invasive kernel-level anti-cheat.",
+  "Similar To / AAA Alternative": "The Division, Valorant (Third-Person)",
+  "Personal Rating / Notes": "[Add your thoughts]",
+  "Steam App ID": "872220"
+},
+  {
+  "Game Title": "Crossout Remastered",
+  "Play Mode": "Online Multiplayer (PvP & PvE Action)",
+  "Status / Availability": "Free-to-Play (Steam)",
+  "Genre / Style": "Post-Apocalyptic Vehicular Combat & Crafting Sandbox",
+  "Key Features & Why It's Awesome": "Build completely custom armored combat vehicles, buggies, and trucks out of modular parts, then drive them into explosive land and aerial multiplayer battles with smooth mid-range performance.",
+  "Similar To / AAA Alternative": "Twisted Metal, Mad Max, Crossout / Robocraft",
+  "Personal Rating / Notes": "[Add your thoughts]",
+  "Steam App ID": "386180"
+},
+  {
+  "Game Title": "Scarlet Nexus (Demo)",
+  "Play Mode": "Single-Player (Offline)",
+  "Status / Availability": "Free Demo (Steam)",
+  "Genre / Style": "Sci-Fi Anime Action-Adventure / Psycho-Kinetic Brawler",
+  "Key Features & Why It's Awesome": "Fast-paced real-time anime action combat combining swordplay with psychokinetic powers to hurl environmental objects at enemies, featuring stylish cel-shaded visuals and smooth performance on RTX 3050.",
+  "Similar To / AAA Alternative": "Code Vein, Devil May Cry 5, Astral Chain",
+  "Personal Rating / Notes": "[Add your thoughts]",
+  "Steam App ID": "775500"
+}
+
 
 ]
