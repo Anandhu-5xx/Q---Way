@@ -1,0 +1,2498 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Q - Way | Quick Way Game Hub</title>
+
+    <!-- CUSTOM FAVICON (Browser Tab Icon) -->
+    <link rel="icon" type="image/png" href="icon.png">
+    
+    <!-- APPLE TOUCH & SMARTPHONE PWA HOME SCREEN ICON -->
+    <link rel="apple-touch-icon" href="icon.png">
+
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        darkBg: '#05070a',
+                        glassBg: 'rgba(10, 14, 23, 0.85)',
+                        cardBg: 'rgba(16, 21, 33, 0.75)',
+                        neonCyan: '#00f2fe',
+                        neonPurple: '#4facfe',
+                        kiaraPink: '#f472b6',
+                        kiaraViolet: '#a855f7'
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- FontAwesome & Google Fonts -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link id="pwa-manifest" rel="manifest" href="">
+    <style>
+        body {
+            font-family: 'Outfit', sans-serif;
+            background-color: #05070a;
+            color: #f3f4f6;
+            overflow-x: hidden;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+        .light body {
+            background-color: #f0f4f8;
+            color: #1f2937;
+        }
+        .glass-panel {
+            background: rgba(10, 14, 23, 0.88);
+            backdrop-filter: blur(22px);
+            -webkit-backdrop-filter: blur(22px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.6);
+        }
+        .light .glass-panel {
+            background: rgba(255, 255, 255, 0.92);
+            border: 1px solid rgba(0, 0, 0, 0.08);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.08);
+        }
+        .glass-card {
+            background: rgba(16, 21, 33, 0.78);
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .light .glass-card {
+            background: rgba(255, 255, 255, 0.95);
+            border: 1px solid rgba(0, 0, 0, 0.06);
+        }
+        .glass-card:hover {
+            transform: translateY(-4px);
+            border-color: rgba(0, 242, 254, 0.4);
+            box-shadow: 0 12px 40px -10px rgba(0, 242, 254, 0.3);
+        }
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar-track { background: #05070a; }
+        .light ::-webkit-scrollbar-track { background: #f0f4f8; }
+        ::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.2); border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: rgba(0, 242, 254, 0.5); }
+
+        /* Kiara Holographic Orb & Emergence Animations */
+        @keyframes kiaraFloat {
+            0%, 100% { transform: translateY(0px) scale(1); }
+            50% { transform: translateY(-5px) scale(1.03); }
+        }
+        @keyframes kiaraPulseRing {
+            0% { transform: scale(0.95); opacity: 0.8; }
+            70% { transform: scale(1.35); opacity: 0; }
+            100% { transform: scale(1.35); opacity: 0; }
+        }
+        @keyframes kiaraEmerge {
+            0% {
+                opacity: 0;
+                transform: translateY(36px) scale(0.78);
+                filter: blur(12px);
+            }
+            65% {
+                opacity: 1;
+                transform: translateY(-4px) scale(1.01);
+                filter: blur(0px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+                filter: blur(0px);
+            }
+        }
+        .kiara-orb-float {
+            animation: kiaraFloat 3.6s ease-in-out infinite;
+        }
+        .kiara-pulse-ring {
+            animation: kiaraPulseRing 2.6s cubic-bezier(0.24, 0, 0.38, 1) infinite;
+        }
+        .kiara-panel-emerge {
+            animation: kiaraEmerge 0.42s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+        .kiara-control-glow {
+            box-shadow: 0 0 0 1px rgba(168, 85, 247, 0.5), 0 0 28px rgba(0, 242, 254, 0.25);
+            transition: box-shadow 0.4s ease;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col select-none">
+
+    <!-- TOAST NOTIFICATION (For Quick-Share & Actions) -->
+    <div id="toast-notification" class="fixed bottom-24 right-5 z-[60] glass-panel border border-neonCyan/40 px-4 py-3 rounded-xl shadow-2xl flex items-center gap-2.5 text-xs sm:text-sm font-semibold text-neonCyan transform translate-y-20 opacity-0 transition-all duration-300 pointer-events-none">
+        <i class="fa-solid fa-circle-check text-base"></i>
+        <span id="toast-message">Link copied to clipboard!</span>
+    </div>
+
+    <!-- ===================================================================== -->
+    <!-- KIARA AI FLOATING SUMMON ORB & HOLOGRAPHIC COMMAND DRAWER              -->
+    <!-- ===================================================================== -->
+    <button id="kiara-summon-btn" onclick="toggleKiaraPanel(true)" class="fixed bottom-5 right-5 z-[55] group flex items-center gap-2.5 pl-3 pr-4 py-2.5 rounded-full glass-panel border border-purple-400/50 shadow-2xl shadow-purple-500/30 hover:border-neonCyan transition-all kiara-orb-float" title="Summon Kiara AI Assistant (Alt + K)">
+        <span class="relative flex h-9 w-9 items-center justify-center">
+            <span class="kiara-pulse-ring absolute inline-flex h-full w-full rounded-full bg-gradient-to-tr from-neonCyan via-purple-500 to-pink-500 opacity-75"></span>
+            <span class="relative inline-flex rounded-full h-9 w-9 bg-gradient-to-tr from-neonCyan via-purple-500 to-pink-500 items-center justify-center text-darkBg font-black text-sm shadow-inner">
+                <i class="fa-solid fa-sparkles"></i>
+            </span>
+        </span>
+        <div class="text-left">
+            <div class="flex items-center gap-1.5">
+                <span class="text-xs sm:text-sm font-extrabold bg-gradient-to-r from-neonCyan via-purple-300 to-pink-300 bg-clip-text text-transparent">Kiara AI</span>
+                <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+            </div>
+            <span class="text-[10px] text-gray-400 block leading-tight">Ask in natural language</span>
+        </div>
+    </button>
+
+    <!-- Kiara Assistant Drawer (Emerges out of nowhere & controls the whole app) -->
+    <div id="kiara-panel" class="fixed bottom-4 right-4 left-4 sm:left-auto sm:w-[430px] max-h-[82vh] z-[58] glass-panel rounded-3xl border border-purple-400/40 shadow-[0_20px_70px_rgba(168,85,247,0.35)] flex flex-col overflow-hidden hidden">
+        <!-- Holographic Header -->
+        <div class="relative px-4 py-3.5 bg-gradient-to-r from-neonCyan/15 via-purple-500/20 to-pink-500/15 border-b border-white/10 flex items-center justify-between overflow-hidden">
+            <div class="flex items-center gap-3 relative z-10">
+                <div class="w-10 h-10 rounded-2xl bg-gradient-to-tr from-neonCyan via-purple-500 to-pink-500 p-[2px] shadow-lg shadow-purple-500/30">
+                    <div class="w-full h-full rounded-[14px] bg-darkBg flex items-center justify-center text-neonCyan">
+                        <i class="fa-solid fa-wand-magic-sparkles text-base"></i>
+                    </div>
+                </div>
+                <div>
+                    <div class="flex items-center gap-2">
+                        <h3 class="font-extrabold text-sm tracking-wide bg-gradient-to-r from-neonCyan via-purple-300 to-pink-300 bg-clip-text text-transparent">KIARA • Q-Way Co-Pilot</h3>
+                        <span class="text-[9px] px-1.5 py-0.5 rounded bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 font-mono font-bold">OFFLINE ML</span>
+                    </div>
+                    <p id="kiara-status-line" class="text-[10px] text-gray-400 font-mono">N-Gram Markov + Semantic + 3-Layer MLP Active</p>
+                </div>
+            </div>
+            <div class="flex items-center gap-1 relative z-10">
+                <button onclick="resetKiaraControl()" class="p-2 rounded-xl hover:bg-white/10 text-gray-400 hover:text-neonCyan text-xs" title="Reset App Filters & Context">
+                    <i class="fa-solid fa-rotate-left"></i>
+                </button>
+                <button onclick="toggleKiaraPanel(false)" class="p-2 rounded-xl hover:bg-white/10 text-gray-400 hover:text-white" title="Minimize Kiara (Esc)">
+                    <i class="fa-solid fa-xmark text-base"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Active App Control Banner (Shows what Kiara is currently controlling + Multi-turn memory) -->
+        <div id="kiara-control-bar" class="px-4 py-2 bg-purple-500/10 border-b border-purple-400/20 flex items-center justify-between gap-2 text-[11px]">
+            <div class="flex items-center gap-1.5 text-purple-200 truncate">
+                <i class="fa-solid fa-sliders text-neonCyan text-[10px]"></i>
+                <span id="kiara-control-summary" class="truncate font-medium">Ready to control search, filters & picks</span>
+            </div>
+            <span id="kiara-mlp-epochs" class="text-[10px] font-mono text-neonCyan shrink-0">MLP v1</span>
+        </div>
+
+        <!-- Chat Messages Stream -->
+        <div id="kiara-messages" class="flex-1 overflow-y-auto p-4 space-y-3.5 text-xs sm:text-sm select-text"></div>
+
+        <!-- Quick Natural Language Prompt Chips -->
+        <div class="px-3 pt-2 pb-1.5 border-t border-white/5 flex items-center gap-1.5 overflow-x-auto no-scrollbar">
+            <button onclick="askKiaraPreset('Offline games under 25 GB')" class="px-2.5 py-1 rounded-full glass-card text-[11px] text-neonCyan hover:bg-neonCyan/15 whitespace-nowrap border border-neonCyan/20">
+                ✈️ Offline under 25 GB
+            </button>
+            <button onclick="askKiaraPreset('Something like Ghost of Tsushima')" class="px-2.5 py-1 rounded-full glass-card text-[11px] text-purple-300 hover:bg-purple-500/15 whitespace-nowrap border border-purple-400/20">
+                ⚔️ Like Ghost of Tsushima
+            </button>
+            <button onclick="askKiaraPreset('Fit my free SSD space')" class="px-2.5 py-1 rounded-full glass-card text-[11px] text-emerald-300 hover:bg-emerald-500/15 whitespace-nowrap border border-emerald-400/20">
+                💾 Fit my free SSD
+            </button>
+            <button onclick="askKiaraPreset('Pick based on my wishlist and history')" class="px-2.5 py-1 rounded-full glass-card text-[11px] text-pink-300 hover:bg-pink-500/15 whitespace-nowrap border border-pink-400/20">
+                🧠 Match my taste
+            </button>
+        </div>
+
+        <!-- Kiara Natural Language Input Form -->
+        <form onsubmit="handleKiaraSubmit(event)" class="p-3 border-t border-white/10 flex items-center gap-2 bg-darkBg/40">
+            <input type="text" id="kiara-input" placeholder="Ask Kiara or refine (e.g. 'only offline', 'under 15gb')..." class="flex-1 px-3.5 py-2.5 rounded-xl glass-card text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-purple-400/60" autocomplete="off">
+            <button type="submit" class="px-3.5 py-2.5 rounded-xl bg-gradient-to-r from-neonCyan via-purple-500 to-pink-500 text-darkBg font-extrabold text-xs hover:opacity-95 transition-all shadow-lg flex items-center gap-1.5 shrink-0">
+                <span>Ask</span>
+                <i class="fa-solid fa-paper-plane text-[11px]"></i>
+            </button>
+        </form>
+    </div>
+
+    <!-- HEADER / NAVIGATION -->
+    <header class="sticky top-0 z-50 glass-panel border-b px-3 sm:px-4 lg:px-8 py-3 flex items-center justify-between gap-2">
+        <div class="flex items-center gap-3">
+            <button id="sidebar-toggle" onclick="toggleSidebar()" class="p-2.5 rounded-xl glass-card hover:text-neonCyan transition-colors">
+                <i class="fa-solid fa-bars text-xl"></i>
+            </button>
+            
+            <a href="#" onclick="resetFilters()" class="flex items-center gap-2">
+                <div class="h-10 flex items-center justify-center">
+                    <img id="platform-logo-img" src="icon.png" alt="Q - Way Logo" class="h-9 w-9 object-cover rounded-xl border border-neonCyan/30" onerror="this.classList.add('hidden'); document.getElementById('logo-text-fallback').classList.remove('hidden');">
+                    <div id="logo-text-fallback" class="flex items-center gap-2">
+                        <span class="text-xl sm:text-2xl font-black bg-gradient-to-r from-neonCyan to-neonPurple bg-clip-text text-transparent tracking-wider">Q - WAY</span>
+                    </div>
+                </div>
+            </a>
+        </div>
+
+        <!-- Global Search Bar (Mobile & Desktop with '/' shortcut, YouTube-style Clear Button & Natural Language Auto-Hand-Off to Kiara) -->
+        <div class="flex items-center relative max-w-xs sm:max-w-md w-full mx-2">
+            <i class="fa-solid fa-search absolute left-3.5 text-gray-400 text-sm pointer-events-none"></i>
+            <input type="text" id="global-search" placeholder="Search or ask Kiara (e.g. offline under 20gb)..." class="w-full pl-10 pr-12 py-2 rounded-xl glass-card text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-neonCyan/50 transition-all">
+            
+            <!-- Shortcut hint badge when empty -->
+            <kbd id="search-slash-hint" class="hidden sm:inline-flex items-center justify-center absolute right-3 px-1.5 py-0.5 text-[10px] font-mono font-semibold text-gray-400 bg-white/5 border border-white/10 rounded pointer-events-none">/</kbd>
+            
+            <!-- YouTube-style Clear Button when typing -->
+            <button type="button" id="search-clear-btn" onclick="clearSearchBar()" class="hidden absolute right-2 w-7 h-7 rounded-full hover:bg-white/15 active:bg-white/20 text-gray-300 hover:text-white flex items-center justify-center transition-colors" title="Clear search" aria-label="Clear search">
+                <i class="fa-solid fa-xmark text-sm"></i>
+            </button>
+
+            <div id="search-history-dropdown" class="absolute top-full left-0 right-0 mt-2 glass-panel rounded-xl shadow-2xl hidden z-50 overflow-hidden max-h-60 overflow-y-auto"></div>
+        </div>
+
+        <!-- Controls -->
+        <div class="flex items-center gap-2">
+            <!-- PWA Install Button -->
+            <button id="pwa-install-btn" onclick="installPWA()" class="hidden px-2.5 py-2 rounded-xl bg-neonCyan text-darkBg font-bold text-xs hover:opacity-90 transition-all items-center gap-1.5 shadow-lg shadow-neonCyan/20" title="Install App">
+                <i class="fa-solid fa-download"></i>
+                <span class="hidden md:inline">Install</span>
+            </button>
+
+            <!-- Single-Tab Store Mode Toggle -->
+            <button id="single-tab-btn" onclick="toggleSingleTabMode()" class="px-2.5 sm:px-3 py-2 rounded-xl glass-card hover:text-neonCyan flex items-center gap-1.5 text-xs font-semibold transition-all border border-neonCyan/20" title="Toggle single tab mode">
+                <i id="single-tab-icon" class="fa-solid fa-window-restore text-neonCyan"></i>
+                <span class="hidden lg:inline" id="single-tab-label">Single Tab: ON</span>
+            </button>
+
+            <button onclick="openCompareModal()" class="relative p-2 rounded-xl glass-card hover:text-neonCyan flex items-center gap-1.5 text-sm font-medium" title="Compare Games">
+                <i class="fa-solid fa-scale-balanced"></i>
+                <span id="compare-badge" class="absolute -top-1.5 -right-1.5 bg-neonCyan text-darkBg font-bold text-[10px] w-4 h-4 rounded-full flex items-center justify-center hidden">0</span>
+            </button>
+            <button onclick="toggleTheme()" class="p-2.5 rounded-xl glass-card hover:text-neonCyan" title="Toggle Theme">
+                <i id="theme-icon" class="fa-solid fa-moon text-base"></i>
+            </button>
+        </div>
+    </header>
+
+    <!-- SIDEBAR DRAWER -->
+    <aside id="sidebar" class="fixed inset-y-0 left-0 z-50 w-80 glass-panel border-r transform -translate-x-full transition-transform duration-300 flex flex-col shadow-2xl">
+        <div class="p-5 border-b border-gray-700/30 flex items-center justify-between">
+            <h2 class="font-bold text-lg flex items-center gap-2">
+                <i class="fa-solid fa-gamepad text-neonCyan"></i> Q-Way Library
+            </h2>
+            <button onclick="toggleSidebar()" class="p-2 rounded-lg hover:bg-white/10"><i class="fa-solid fa-xmark text-lg"></i></button>
+        </div>
+
+        <div class="flex border-b border-gray-700/30 text-sm font-medium">
+            <button onclick="switchSidebarTab('wishlist')" id="sb-tab-wishlist" class="flex-1 py-3 text-center border-b-2 border-neonCyan text-neonCyan">Wishlist (<span id="wishlist-count">0</span>)</button>
+            <button onclick="switchSidebarTab('downloaded')" id="sb-tab-downloaded" class="flex-1 py-3 text-center border-b-2 border-transparent text-gray-400">Played (<span id="downloaded-count">0</span>)</button>
+            <button onclick="switchSidebarTab('history')" id="sb-tab-history" class="flex-1 py-3 text-center border-b-2 border-transparent text-gray-400">History</button>
+        </div>
+
+        <!-- WISHLIST STORAGE CALCULATOR, FREE SSD CHECK & BACKUP BANNER -->
+        <div id="wishlist-storage-banner" class="mx-4 mt-3 p-3 rounded-xl bg-gradient-to-r from-neonCyan/15 to-neonPurple/15 border border-neonCyan/30 space-y-2.5">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center gap-2">
+                    <i class="fa-solid fa-hard-drive text-neonCyan text-sm"></i>
+                    <div>
+                        <span class="text-[10px] uppercase tracking-wider text-gray-400 block font-semibold">Wishlist Drive Space</span>
+                        <span id="wishlist-total-gb" class="text-sm font-extrabold text-neonCyan">0 GB Required</span>
+                    </div>
+                </div>
+                <span id="wishlist-ssd-fit" class="text-[10px] px-2 py-0.5 rounded-md bg-darkBg/60 text-gray-300 border border-white/10 font-mono">Empty</span>
+            </div>
+
+            <!-- Real-World Remaining Free Disk Space Input -->
+            <div class="pt-2 border-t border-white/10 space-y-1.5">
+                <div class="flex items-center justify-between gap-2">
+                    <label for="free-disk-input" class="text-[10px] uppercase tracking-wider text-gray-400 font-semibold">My Free SSD (GB)</label>
+                    <div class="flex items-center gap-1.5">
+                        <input type="number" id="free-disk-input" min="1" max="8000" step="1" placeholder="e.g. 80" oninput="updateFreeDiskSpace(this.value)" class="w-20 px-2 py-1 rounded-lg bg-darkBg/70 border border-white/15 text-xs font-mono text-amber-300 focus:outline-none focus:border-neonCyan text-right">
+                        <button onclick="filterCatalogByFreeSpace()" class="px-2 py-1 rounded-lg bg-amber-400/15 hover:bg-amber-400 hover:text-darkBg text-amber-300 border border-amber-400/30 text-[10px] font-bold transition-all" title="Show catalog games that fit your remaining drive space">
+                            Filter Fits
+                        </button>
+                    </div>
+                </div>
+                <div id="free-disk-status" class="text-[11px] font-mono text-gray-400 hidden"></div>
+            </div>
+
+            <!-- Export / Import Full Library Controls -->
+            <div class="pt-2 border-t border-white/10 space-y-1.5">
+                <div class="flex items-center justify-between text-[10px] text-gray-400">
+                    <span>Library Backup (Wishlist + Played)</span>
+                    <label class="inline-flex items-center gap-1 cursor-pointer" title="Merge imported games with existing lists instead of replacing">
+                        <input type="checkbox" id="import-merge-toggle" checked class="accent-neonCyan">
+                        <span>Merge on import</span>
+                    </label>
+                </div>
+                <div class="flex items-center gap-2">
+                    <button onclick="exportWishlist()" class="flex-1 py-1.5 px-2.5 rounded-lg bg-darkBg/60 hover:bg-neonCyan hover:text-darkBg text-neonCyan border border-neonCyan/30 text-[11px] font-bold transition-all flex items-center justify-center gap-1.5" title="Download Library Backup (.json)">
+                        <i class="fa-solid fa-file-export"></i>
+                        <span>Export</span>
+                    </button>
+                    <button onclick="triggerWishlistImport()" class="flex-1 py-1.5 px-2.5 rounded-lg bg-darkBg/60 hover:bg-neonPurple hover:text-darkBg text-neonPurple border border-neonPurple/30 text-[11px] font-bold transition-all flex items-center justify-center gap-1.5" title="Restore Library from Backup (.json)">
+                        <i class="fa-solid fa-file-import"></i>
+                        <span>Import</span>
+                    </button>
+                    <input type="file" id="wishlist-import-input" accept=".json,application/json" class="hidden" onchange="handleWishlistImport(event)">
+                </div>
+            </div>
+        </div>
+
+        <div class="flex-1 overflow-y-auto p-4 space-y-3" id="sidebar-content"></div>
+
+        <div class="p-4 border-t border-gray-700/30 glass-card space-y-2">
+            <div class="flex items-center justify-between text-xs">
+                <span class="text-gray-400">Search History</span>
+                <label class="relative inline-flex items-center cursor-pointer">
+                    <input type="checkbox" id="setting-history-toggle" checked onchange="toggleHistorySetting()" class="sr-only peer">
+                    <div class="w-8 h-4 bg-gray-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-3 after:w-3 after:transition-all peer-checked:bg-neonCyan"></div>
+                </label>
+            </div>
+            <div class="flex items-center justify-between text-xs">
+                <span class="text-gray-400">JSON Sync Status</span>
+                <span id="sync-status" class="font-mono text-neonCyan">Checking...</span>
+            </div>
+        </div>
+    </aside>
+    <div id="sidebar-backdrop" onclick="toggleSidebar()" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-40 hidden"></div>
+
+    <!-- MAIN APP CONTENT -->
+    <main id="main-app-shell" class="flex-1 flex flex-col min-w-0">
+        
+        <!-- DIRECTORY ONLY NOTICE BANNER TAG -->
+        <div class="bg-gradient-to-r from-neonCyan/10 via-neonPurple/10 to-neonCyan/10 border-b border-neonCyan/20 px-4 py-2.5 text-center text-xs md:text-sm font-medium flex items-center justify-center gap-2">
+            <i class="fa-solid fa-circle-info text-neonCyan"></i>
+            <span><strong>Q-Way Directory:</strong> A platform exclusively for browsing & comparing free games available on Steam & Epic Games. <em>No downloads hosted on this site—all links route directly to official store pages.</em></span>
+        </div>
+
+        <!-- TOP CATEGORY TABS -->
+        <div class="sticky top-[65px] z-30 glass-panel border-b px-4 lg:px-8 py-3">
+            <div id="category-tabs" class="flex items-center gap-2 overflow-x-auto pb-1 no-scrollbar"></div>
+        </div>
+
+        <!-- HERO SECTION -->
+        <section class="px-4 lg:px-8 py-6">
+            <div class="glass-panel rounded-2xl p-6 md:p-8 relative overflow-hidden">
+                <div class="max-w-2xl relative z-10">
+                    <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-purple-500/15 border border-purple-400/30 text-purple-200 text-xs font-semibold mb-3">
+                        <i class="fa-solid fa-brain text-neonCyan"></i> N-Gram Markov + Semantic + 3-Layer MLP Engine
+                    </div>
+                    <h1 class="text-2xl md:text-4xl font-extrabold tracking-tight mb-2">Search, Scroll & Ask Kiara</h1>
+                    <p class="text-gray-300 text-sm mb-5">Browse free-to-play titles on Steam & Epic Games, or summon <strong>Kiara</strong> in plain English—she remembers your follow-ups, checks your remaining SSD space, and ranks matches using on-device neural scoring.</p>
+                    <div class="flex flex-wrap gap-3">
+                        <button onclick="toggleKiaraPanel(true)" class="px-5 py-2.5 rounded-xl bg-gradient-to-r from-neonCyan via-purple-500 to-pink-500 text-darkBg font-extrabold text-sm shadow-lg shadow-purple-500/25 hover:opacity-95 transition-all flex items-center gap-2">
+                            <i class="fa-solid fa-wand-magic-sparkles"></i> Summon Kiara AI
+                        </button>
+                        <button onclick="computeHybridRecommendations(true)" class="px-5 py-2.5 rounded-xl glass-card border border-neonCyan/30 text-neonCyan hover:bg-neonCyan/10 text-sm font-semibold flex items-center gap-2">
+                            <i class="fa-solid fa-microchip"></i> Refresh MLP Feed
+                        </button>
+                        <button onclick="resetFilters()" class="px-5 py-2.5 rounded-xl glass-card hover:bg-white/10 text-sm font-semibold">
+                            Show All Games
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- HYBRID N-GRAM MARKOV + SEMANTIC + 3-LAYER MLP FEED SECTION -->
+        <section id="recommendations-section" class="px-4 lg:px-8 pb-8 hidden">
+            <div class="flex items-center justify-between flex-wrap gap-2 mb-4">
+                <div class="flex items-center gap-2 flex-wrap">
+                    <i class="fa-solid fa-bolt text-neonCyan text-lg"></i>
+                    <h2 class="text-xl font-bold tracking-tight">Recommended For You</h2>
+                    <span class="text-[11px] px-2.5 py-0.5 rounded-md bg-purple-500/15 text-purple-200 border border-purple-400/30 font-mono font-bold">Markov + Semantic + 3-Layer MLP</span>
+                </div>
+                <button onclick="computeHybridRecommendations(true)" class="text-xs text-neonCyan hover:underline font-semibold flex items-center gap-1">
+                    <i class="fa-solid fa-arrows-rotate"></i> Re-Train & Rank
+                </button>
+            </div>
+            <div id="recommendations-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4"></div>
+        </section>
+
+        <!-- GAMES GRID -->
+        <section id="catalog-section" class="px-4 lg:px-8 pb-12 flex-1">
+            <!-- Kiara Active Control Strip above Grid when Kiara applies custom filters -->
+            <div id="kiara-active-filter-banner" class="hidden mb-4 px-4 py-2.5 rounded-xl glass-panel border border-purple-400/40 flex items-center justify-between gap-2 text-xs">
+                <div class="flex items-center gap-2 text-purple-200">
+                    <i class="fa-solid fa-wand-magic-sparkles text-neonCyan"></i>
+                    <span id="kiara-active-filter-text">Kiara is filtering your catalog...</span>
+                </div>
+                <button onclick="resetKiaraControl()" class="text-neonCyan hover:underline font-bold shrink-0">Clear Kiara Filter</button>
+            </div>
+
+            <div class="flex items-center justify-between mb-6">
+                <h2 id="section-title" class="text-xl font-bold tracking-tight">Featured Free Games</h2>
+                <span id="game-count-label" class="text-xs text-gray-400">Loading catalog...</span>
+            </div>
+            <div id="games-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"></div>
+        </section>
+    </main>
+
+    <!-- GAME DETAILS MODAL -->
+    <div id="game-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md hidden">
+        <div class="glass-panel rounded-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto p-6 relative">
+            <button onclick="closeGameModal()" class="absolute -top-3 -right-3 md:top-4 md:right-4 z-20 p-2.5 rounded-xl bg-darkBg border border-neonCyan/40 text-neonCyan shadow-xl hover:bg-neonCyan hover:text-darkBg transition-all"><i class="fa-solid fa-xmark text-lg"></i></button>
+            <div id="modal-body"></div>
+        </div>
+    </div>
+
+    <!-- COMPARE MODAL -->
+    <div id="compare-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md hidden">
+        <div class="glass-panel rounded-2xl max-w-4xl w-full max-h-[90vh] overflow-y-auto p-6 relative">
+            <button onclick="closeCompareModal()" class="absolute top-4 right-4 p-2 rounded-xl glass-card hover:bg-white/10"><i class="fa-solid fa-xmark text-lg"></i></button>
+            <h2 class="text-xl font-bold mb-4 flex items-center gap-2"><i class="fa-solid fa-scale-balanced text-neonCyan"></i> Game Comparison Platform</h2>
+            <div id="compare-modal-content" class="overflow-x-auto"></div>
+        </div>
+    </div>
+
+    <script>
+        // CURATED AESTHETIC PLACEHOLDER IMAGE ARRAY
+        const fallbackImages = [
+            "https://images.unsplash.com/photo-1762219214808-154d74e0d761?w=600&auto=format&fit=crop&q=60",
+            "https://images.unsplash.com/photo-1616588589676-62b3bd4ff6d2?w=1000&auto=format&fit=crop&q=60",
+            "https://plus.unsplash.com/premium_photo-1682141878168-5dace8e1785d?w=1000&auto=format&fit=crop&q=60",
+            "https://images.unsplash.com/photo-1612287230202-1ff1d85d1bdf?w=1000&auto=format&fit=crop&q=60",
+            "https://images.unsplash.com/photo-1775410633801-5d7997f795c6?w=1000&auto=format&fit=crop&q=60",
+            "https://images.unsplash.com/photo-1775410632949-e220dfd7746b?w=1000&auto=format&fit=crop&q=60",
+            "https://plus.unsplash.com/premium_photo-1682088486926-42e23e19f421?w=1000&auto=format&fit=crop&q=60",
+            "https://images.unsplash.com/photo-1534423861386-85a16f5d13fd?w=1000&auto=format&fit=crop&q=60",
+            "https://plus.unsplash.com/premium_photo-1674374443275-20dae04975ac?w=1000&auto=format&fit=crop&q=60",
+            "https://images.unsplash.com/photo-1542751371-adc38448a05e?w=1000&auto=format&fit=crop&q=60"
+        ];
+
+        function getRandomFallback() {
+            const randomIndex = Math.floor(Math.random() * fallbackImages.length);
+            return fallbackImages[randomIndex];
+        }
+
+        const CATEGORIES = ["Featured", "Offline Playable", "Under 25 GB", "Action-Adventure", "Anime", "RPG.MMORPG", "SC-FI", "Survival", "Shooter", "Open World", "Fast-Paced", "Epic Games", "Steam"];
+
+        const FALLBACK_CATALOG = [
+            { title: "Counter-Strike 2", app_id: 730, genre: "Shooter", platform: "Steam", playMode: "Online", approxSize: "35 GB", availability: "Full Game (Steam)", features: "Premier tactical competitive shooter with precise gunplay.", similarTo: "Valorant" },
+            { title: "Dota 2", app_id: 570, genre: "RPG.MMORPG", platform: "Steam", playMode: "Online", approxSize: "45 GB", availability: "Full Game (Steam)", features: "Deep, complex strategy with every single hero unlocked.", similarTo: "League of Legends" },
+            { title: "Where Winds Meet", app_id: 3564740, genre: "Open World", platform: "Steam", playMode: "Online & Offline", approxSize: "65 GB", availability: "Full Game (Steam)", features: "Open-world Wuxia action RPG set in 10th-century China.", similarTo: "Ghost of Tsushima" },
+            { title: "UNDEFEATED", app_id: 1116960, genre: "Action-Adventure", platform: "Steam", playMode: "Offline", approxSize: "4 GB", availability: "Full Game (Steam)", features: "Fly freely through a city, put out fires, and battle boss villains with unlimited flight.", similarTo: "Superman" }
+        ];
+
+        let gamesData = [];
+        let currentCategory = "Featured";
+        let searchQuery = "";
+        let wishlist = JSON.parse(localStorage.getItem('qway_wishlist')) || [];
+        let downloaded = JSON.parse(localStorage.getItem('qway_downloaded')) || [];
+        let searchHistory = JSON.parse(localStorage.getItem('qway_history')) || [];
+        let interactionSequence = JSON.parse(localStorage.getItem('qway_markov_seq')) || [];
+        let freeDiskGB = parseFloat(localStorage.getItem('qway_free_disk_gb')) || null;
+        let compareList = [];
+        let historyEnabled = localStorage.getItem('qway_history_enabled') !== 'false';
+        let singleTabMode = localStorage.getItem('qway_single_tab') !== 'false';
+        let deferredPrompt = null;
+        let toastTimeout = null;
+
+        // Kiara Active App-Control Constraints + Multi-Turn Session Memory
+        let kiaraFilterState = {
+            active: false,
+            offlineOnly: false,
+            onlineOnly: false,
+            maxSizeGB: null,
+            minSizeGB: null,
+            platform: null,
+            matchedCategory: null,
+            rankedGameIds: null,
+            summaryText: ""
+        };
+
+        let kiaraConversationMemory = {
+            turnCount: 0,
+            lastQueryTokens: [],
+            lastRawQuery: "",
+            lastMatchedCategory: null,
+            offlineOnly: false,
+            onlineOnly: false,
+            maxSizeGB: null,
+            minSizeGB: null,
+            platform: null
+        };
+
+        // =========================================================================
+        // 1. N-GRAM MARKOV CHAIN + SEMANTIC FEATURES + 3-LAYER MLP ENGINE (JS)
+        // =========================================================================
+        const STOP_WORDS = new Set([
+            'the', 'and', 'for', 'with', 'that', 'this', 'from', 'into', 'are', 'you',
+            'your', 'can', 'play', 'game', 'games', 'free', 'like', 'want', 'show',
+            'find', 'give', 'some', 'best', 'good', 'need', 'looking', 'something',
+            'which', 'would', 'could', 'please', 'kiara', 'hey', 'hello', 'help',
+            'only', 'ones', 'those', 'them', 'also', 'just', 'make', 'more'
+        ]);
+
+        const SEMANTIC_CONCEPTS = {
+            tactical_competitive: ['shooter', 'fps', 'tactical', 'competitive', 'gunplay', 'esports', 'valorant', 'cs2', 'counter', 'strike', 'apex', 'battle', 'royale', 'arena', 'pvp', 'aim'],
+            open_world_exploration: ['open', 'world', 'explore', 'exploration', 'wuxia', 'tsushima', 'ghost', 'genshin', 'adventure', 'journey', 'quest', 'map', 'sandbox', 'roam'],
+            story_singleplayer: ['story', 'campaign', 'single', 'solo', 'offline', 'narrative', 'cinematic', 'superhero', 'superman', 'undefeated', 'chill', 'relaxing', 'casual'],
+            rpg_progression: ['rpg', 'mmorpg', 'hero', 'heroes', 'character', 'build', 'loot', 'class', 'magic', 'fantasy', 'strategy', 'moba', 'dota', 'league', 'level'],
+            scifi_futuristic: ['sci', 'scifi', 'space', 'cyber', 'futuristic', 'mech', 'robot', 'alien', 'star', 'rail', 'warframe', 'destiny', 'laser'],
+            survival_crafting: ['survival', 'survive', 'craft', 'crafting', 'base', 'zombie', 'horror', 'resource', 'wild', 'post', 'apocalyptic'],
+            fast_adrenaline: ['fast', 'paced', 'speed', 'racing', 'rush', 'parkour', 'action', 'intense', 'high', 'octane', 'combo', 'hack', 'slash'],
+            anime_stylized: ['anime', 'manga', 'stylized', 'gacha', 'cel', 'shaded', 'waifu', 'jrpg', 'japanese']
+        };
+
+        class NGramMarkovChain {
+            constructor() {
+                this.unigrams = {};
+                this.bigrams = {};
+                this.trigrams = {};
+                this.totalUnigrams = 0;
+            }
+
+            tokenize(text) {
+                if (!text) return [];
+                return text.toLowerCase()
+                    .replace(/[^a-z0-9\s]/g, ' ')
+                    .split(/\s+/)
+                    .filter(w => w.length > 1 && !STOP_WORDS.has(w));
+            }
+
+            charNGrams(text, n = 3) {
+                const clean = (text || '').toLowerCase().replace(/[^a-z0-9]/g, '');
+                const grams = new Set();
+                if (clean.length < n) {
+                    if (clean) grams.add(clean);
+                    return grams;
+                }
+                for (let i = 0; i <= clean.length - n; i++) {
+                    grams.add(clean.slice(i, i + n));
+                }
+                return grams;
+            }
+
+            trainSequence(tokens, weight = 1) {
+                if (!tokens || tokens.length === 0) return;
+                for (let i = 0; i < tokens.length; i++) {
+                    const t1 = tokens[i];
+                    this.unigrams[t1] = (this.unigrams[t1] || 0) + weight;
+                    this.totalUnigrams += weight;
+
+                    if (i >= 1) {
+                        const prev1 = tokens[i - 1];
+                        if (!this.bigrams[prev1]) this.bigrams[prev1] = {};
+                        this.bigrams[prev1][t1] = (this.bigrams[prev1][t1] || 0) + weight;
+                    }
+                    if (i >= 2) {
+                        const prev2 = `${tokens[i - 2]}|${tokens[i - 1]}`;
+                        if (!this.trigrams[prev2]) this.trigrams[prev2] = {};
+                        this.trigrams[prev2][t1] = (this.trigrams[prev2][t1] || 0) + weight;
+                    }
+                }
+            }
+
+            scoreCandidateTokens(contextTokens, candidateTokens) {
+                if (!candidateTokens || candidateTokens.length === 0) return 0;
+                if (!contextTokens || contextTokens.length === 0 || this.totalUnigrams === 0) return 0;
+
+                const last1 = contextTokens[contextTokens.length - 1];
+                const last2 = contextTokens.length >= 2
+                    ? `${contextTokens[contextTokens.length - 2]}|${last1}`
+                    : null;
+
+                let scoreSum = 0;
+                for (const tok of candidateTokens) {
+                    let pTri = 0;
+                    let pBi = 0;
+                    const pUni = (this.unigrams[tok] || 0) / Math.max(1, this.totalUnigrams);
+
+                    if (last2 && this.trigrams[last2]) {
+                        const totalTri = Object.values(this.trigrams[last2]).reduce((a, b) => a + b, 0);
+                        pTri = (this.trigrams[last2][tok] || 0) / Math.max(1, totalTri);
+                    }
+                    if (last1 && this.bigrams[last1]) {
+                        const totalBi = Object.values(this.bigrams[last1]).reduce((a, b) => a + b, 0);
+                        pBi = (this.bigrams[last1][tok] || 0) / Math.max(1, totalBi);
+                    }
+
+                    const prob = (0.50 * pTri) + (0.35 * pBi) + (0.15 * pUni);
+                    scoreSum += prob;
+                }
+
+                return Math.min(1, (scoreSum / candidateTokens.length) * 6.5);
+            }
+
+            charNGramSimilarity(queryText, targetText) {
+                const qGrams = this.charNGrams(queryText, 3);
+                const tGrams = this.charNGrams(targetText, 3);
+                if (qGrams.size === 0 || tGrams.size === 0) return 0;
+                let intersection = 0;
+                qGrams.forEach(g => { if (tGrams.has(g)) intersection++; });
+                return intersection / Math.sqrt(qGrams.size * tGrams.size);
+            }
+        }
+
+        // Three-Layered Multi-Layer Perceptron (Input[8] -> Hidden1[16, LeakyReLU] -> Hidden2[8, LeakyReLU] -> Output[1, Sigmoid])
+        class ThreeLayerMLP {
+            constructor(inputSize = 8, h1Size = 16, h2Size = 8) {
+                this.inputSize = inputSize;
+                this.h1Size = h1Size;
+                this.h2Size = h2Size;
+                this.lr = 0.045;
+                this.trainSteps = 0;
+                this.loadOrInitWeights();
+            }
+
+            loadOrInitWeights() {
+                const saved = localStorage.getItem('qway_kiara_mlp_v1');
+                if (saved) {
+                    try {
+                        const parsed = JSON.parse(saved);
+                        if (parsed && parsed.W1 && parsed.W2 && parsed.W3) {
+                            this.W1 = parsed.W1;
+                            this.b1 = parsed.b1;
+                            this.W2 = parsed.W2;
+                            this.b2 = parsed.b2;
+                            this.W3 = parsed.W3;
+                            this.b3 = parsed.b3;
+                            this.trainSteps = parsed.trainSteps || 1;
+                            return;
+                        }
+                    } catch (e) {}
+                }
+
+                const randMat = (rows, cols, scale) =>
+                    Array.from({ length: rows }, () =>
+                        Array.from({ length: cols }, () => (Math.random() * 2 - 1) * scale)
+                    );
+
+                this.W1 = randMat(this.h1Size, this.inputSize, 0.35);
+                this.b1 = new Array(this.h1Size).fill(0.05);
+                this.W2 = randMat(this.h2Size, this.h1Size, 0.35);
+                this.b2 = new Array(this.h2Size).fill(0.05);
+                this.W3 = Array.from({ length: this.h2Size }, () => 0.35);
+                this.b3 = -0.25;
+
+                const featurePriors = [0.75, 0.90, 0.85, 0.80, 0.45, 0.55, 0.40, 0.95];
+                for (let i = 0; i < Math.min(6, this.h1Size); i++) {
+                    for (let j = 0; j < this.inputSize; j++) {
+                        this.W1[i][j] = featurePriors[j] * (0.6 + (i % 3) * 0.15);
+                    }
+                }
+                this.trainSteps = 1;
+            }
+
+            saveWeights() {
+                try {
+                    localStorage.setItem('qway_kiara_mlp_v1', JSON.stringify({
+                        W1: this.W1, b1: this.b1,
+                        W2: this.W2, b2: this.b2,
+                        W3: this.W3, b3: this.b3,
+                        trainSteps: this.trainSteps
+                    }));
+                } catch (e) {}
+            }
+
+            relu(x) { return x > 0 ? x : 0.01 * x; }
+            dRelu(x) { return x > 0 ? 1 : 0.01; }
+            sigmoid(x) {
+                const clamped = Math.max(-15, Math.min(15, x));
+                return 1 / (1 + Math.exp(-clamped));
+            }
+
+            forward(x) {
+                const z1 = new Array(this.h1Size);
+                const a1 = new Array(this.h1Size);
+                for (let i = 0; i < this.h1Size; i++) {
+                    let sum = this.b1[i];
+                    for (let j = 0; j < this.inputSize; j++) sum += this.W1[i][j] * x[j];
+                    z1[i] = sum;
+                    a1[i] = this.relu(sum);
+                }
+
+                const z2 = new Array(this.h2Size);
+                const a2 = new Array(this.h2Size);
+                for (let i = 0; i < this.h2Size; i++) {
+                    let sum = this.b2[i];
+                    for (let j = 0; j < this.h1Size; j++) sum += this.W2[i][j] * a1[j];
+                    z2[i] = sum;
+                    a2[i] = this.relu(sum);
+                }
+
+                let z3 = this.b3;
+                for (let i = 0; i < this.h2Size; i++) z3 += this.W3[i] * a2[i];
+                const out = this.sigmoid(z3);
+
+                return { x, z1, a1, z2, a2, z3, out };
+            }
+
+            predict(x) {
+                return this.forward(x).out;
+            }
+
+            trainSample(x, target) {
+                const cache = this.forward(x);
+                const dz3 = cache.out - target;
+
+                const da2 = new Array(this.h2Size);
+                for (let i = 0; i < this.h2Size; i++) {
+                    da2[i] = dz3 * this.W3[i];
+                    this.W3[i] -= this.lr * dz3 * cache.a2[i];
+                }
+                this.b3 -= this.lr * dz3;
+
+                const dz2 = new Array(this.h2Size);
+                const da1 = new Array(this.h1Size).fill(0);
+                for (let i = 0; i < this.h2Size; i++) {
+                    dz2[i] = da2[i] * this.dRelu(cache.z2[i]);
+                    for (let j = 0; j < this.h1Size; j++) {
+                        da1[j] += dz2[i] * this.W2[i][j];
+                        this.W2[i][j] -= this.lr * dz2[i] * cache.a1[j];
+                    }
+                    this.b2[i] -= this.lr * dz2[i];
+                }
+
+                for (let i = 0; i < this.h1Size; i++) {
+                    const dz1 = da1[i] * this.dRelu(cache.z1[i]);
+                    for (let j = 0; j < this.inputSize; j++) {
+                        this.W1[i][j] -= this.lr * dz1 * x[j];
+                    }
+                    this.b1[i] -= this.lr * dz1;
+                }
+
+                this.trainSteps++;
+            }
+        }
+
+        const markovEngine = new NGramMarkovChain();
+        const mlpRanker = new ThreeLayerMLP(8, 16, 8);
+
+        function getGameSemanticText(game) {
+            return `${game.title} ${game.genre} ${game.features} ${game.similarTo} ${game.playMode} ${game.platform}`;
+        }
+
+        function computeConceptProfile(tokens) {
+            const profile = {};
+            const keys = Object.keys(SEMANTIC_CONCEPTS);
+            keys.forEach(k => { profile[k] = 0; });
+
+            tokens.forEach(tok => {
+                keys.forEach(concept => {
+                    if (SEMANTIC_CONCEPTS[concept].some(kw => tok.includes(kw) || kw.includes(tok))) {
+                        profile[concept] += 1;
+                    }
+                });
+            });
+            return profile;
+        }
+
+        function cosineProfiles(profA, profB) {
+            let dot = 0, magA = 0, magB = 0;
+            for (const k in profA) {
+                dot += (profA[k] || 0) * (profB[k] || 0);
+                magA += (profA[k] || 0) ** 2;
+                magB += (profB[k] || 0) ** 2;
+            }
+            if (magA === 0 || magB === 0) return 0;
+            return dot / (Math.sqrt(magA) * Math.sqrt(magB));
+        }
+
+        function rebuildMarkovModel() {
+            markovEngine.unigrams = {};
+            markovEngine.bigrams = {};
+            markovEngine.trigrams = {};
+            markovEngine.totalUnigrams = 0;
+
+            const trajectoryTokens = [];
+            interactionSequence.forEach((gameId, idx) => {
+                const g = gamesData.find(item => item.id === gameId);
+                if (g) {
+                    const recencyWeight = 1 + (idx / Math.max(1, interactionSequence.length));
+                    const gTokens = markovEngine.tokenize(`${g.genre} ${g.similarTo} ${g.playMode} ${g.title}`);
+                    markovEngine.trainSequence(gTokens, recencyWeight);
+                    trajectoryTokens.push(...gTokens.slice(0, 4));
+                }
+            });
+            if (trajectoryTokens.length > 1) {
+                markovEngine.trainSequence(trajectoryTokens, 1.2);
+            }
+
+            wishlist.forEach(w => {
+                const tokens = markovEngine.tokenize(`${w.genre} ${w.similarTo} ${w.features} ${w.playMode}`);
+                markovEngine.trainSequence(tokens, 2.5);
+            });
+            downloaded.forEach(d => {
+                const tokens = markovEngine.tokenize(`${d.genre} ${d.similarTo} ${d.features}`);
+                markovEngine.trainSequence(tokens, 1.8);
+            });
+
+            searchHistory.slice().reverse().forEach(term => {
+                const tokens = markovEngine.tokenize(term);
+                markovEngine.trainSequence(tokens, 1.4);
+            });
+        }
+
+        function extractHybridFeatureVector(game, parsedIntent = null) {
+            const gameText = getGameSemanticText(game);
+            const gameTokens = markovEngine.tokenize(gameText);
+            const gameConceptProf = computeConceptProfile(gameTokens);
+
+            const userTokens = [];
+            wishlist.forEach(w => userTokens.push(...markovEngine.tokenize(getGameSemanticText(w))));
+            downloaded.forEach(d => userTokens.push(...markovEngine.tokenize(getGameSemanticText(d))));
+            searchHistory.forEach(s => userTokens.push(...markovEngine.tokenize(s)));
+
+            const recentGameIds = interactionSequence.slice(-4);
+            const recentContextTokens = [];
+            recentGameIds.forEach(id => {
+                const rg = gamesData.find(g => g.id === id);
+                if (rg) recentContextTokens.push(...markovEngine.tokenize(`${rg.genre} ${rg.similarTo} ${rg.title}`));
+            });
+
+            // Feature 0: N-Gram Markov Transition Score
+            const markovScore = markovEngine.scoreCandidateTokens(
+                recentContextTokens.length > 0 ? recentContextTokens : userTokens.slice(-6),
+                gameTokens
+            );
+
+            // Feature 1: Lexical TF Overlap with User Profile
+            let overlapCount = 0;
+            if (userTokens.length > 0) {
+                const userSet = new Set(userTokens);
+                gameTokens.forEach(t => { if (userSet.has(t)) overlapCount++; });
+            }
+            const userLexicalScore = userTokens.length > 0
+                ? Math.min(1, overlapCount / Math.max(3, gameTokens.length * 0.55))
+                : 0.35;
+
+            // Feature 2: Semantic Domain Concept Alignment
+            const userConceptProf = computeConceptProfile(userTokens);
+            const conceptScore = userTokens.length > 0
+                ? cosineProfiles(userConceptProf, gameConceptProf)
+                : 0.4;
+
+            // Feature 3: AAA Alternative / Title Similarity
+            let aaaScore = 0.25;
+            if (parsedIntent && parsedIntent.rawQuery) {
+                aaaScore = Math.max(
+                    markovEngine.charNGramSimilarity(parsedIntent.rawQuery, game.similarTo || ''),
+                    markovEngine.charNGramSimilarity(parsedIntent.rawQuery, game.title || '')
+                );
+            } else if (wishlist.length > 0) {
+                aaaScore = Math.max(...wishlist.map(w =>
+                    markovEngine.charNGramSimilarity(w.similarTo || w.genre, game.similarTo || game.genre)
+                ));
+            }
+
+            // Feature 4: Storage Size Compatibility (respects explicit limit or user's remaining free SSD)
+            let sizeFit = Math.max(0.1, 1 - (game.sizeGB / 110));
+            const effectiveLimit = (parsedIntent && parsedIntent.maxSizeGB !== null)
+                ? parsedIntent.maxSizeGB
+                : freeDiskGB;
+            if (effectiveLimit !== null && effectiveLimit > 0) {
+                sizeFit = game.sizeGB <= effectiveLimit
+                    ? 1.0 - (game.sizeGB / (effectiveLimit * 2.5))
+                    : 0.0;
+            }
+
+            // Feature 5: Connectivity / Offline Fit
+            const isOfflineCapable = (game.playMode || '').toLowerCase().includes('offline');
+            let connectivityFit = isOfflineCapable ? 0.85 : 0.55;
+            if (parsedIntent) {
+                if (parsedIntent.offlineOnly) connectivityFit = isOfflineCapable ? 1.0 : 0.0;
+                else if (parsedIntent.onlineOnly) connectivityFit = !isOfflineCapable ? 1.0 : 0.5;
+            }
+
+            // Feature 6: Platform Affinity
+            let platformFit = 0.6;
+            if (parsedIntent && parsedIntent.platform) {
+                platformFit = game.platform.toLowerCase() === parsedIntent.platform.toLowerCase() ? 1.0 : 0.1;
+            } else if (wishlist.length > 0) {
+                const steamPref = wishlist.filter(w => w.platform === 'Steam').length / wishlist.length;
+                platformFit = game.platform === 'Steam' ? 0.5 + 0.5 * steamPref : 0.5 + 0.5 * (1 - steamPref);
+            }
+
+            // Feature 7: Direct Natural-Language Query Semantic Match
+            let querySemanticFit = 0.5;
+            if (parsedIntent && parsedIntent.queryTokens.length > 0) {
+                const qConceptProf = computeConceptProfile(parsedIntent.queryTokens);
+                const qConceptSim = cosineProfiles(qConceptProf, gameConceptProf);
+                const qMarkovSim = markovEngine.scoreCandidateTokens(parsedIntent.queryTokens, gameTokens);
+                const qCharSim = markovEngine.charNGramSimilarity(parsedIntent.rawQuery, gameText);
+
+                let directTokenHits = 0;
+                parsedIntent.queryTokens.forEach(qt => {
+                    if (gameText.toLowerCase().includes(qt)) directTokenHits++;
+                });
+                const directRatio = directTokenHits / parsedIntent.queryTokens.length;
+
+                querySemanticFit = Math.min(1, (0.45 * directRatio) + (0.30 * qConceptSim) + (0.15 * qMarkovSim) + (0.10 * qCharSim));
+            }
+
+            return [
+                markovScore,
+                userLexicalScore,
+                conceptScore,
+                aaaScore,
+                sizeFit,
+                connectivityFit,
+                platformFit,
+                querySemanticFit
+            ];
+        }
+
+        function trainMLPFromUserSignals(epochs = 3) {
+            if (!gamesData || gamesData.length === 0) return;
+            rebuildMarkovModel();
+
+            const positiveIds = new Set([
+                ...wishlist.map(w => w.id),
+                ...downloaded.map(d => d.id),
+                ...interactionSequence.slice(-5)
+            ]);
+
+            if (positiveIds.size === 0) return;
+
+            const positives = gamesData.filter(g => positiveIds.has(g.id));
+            const negatives = gamesData.filter(g => !positiveIds.has(g.id));
+
+            for (let ep = 0; ep < epochs; ep++) {
+                positives.forEach(posGame => {
+                    const posVec = extractHybridFeatureVector(posGame, null);
+                    mlpRanker.trainSample(posVec, 0.94);
+
+                    if (negatives.length > 0) {
+                        const negGame = negatives[Math.floor(Math.random() * negatives.length)];
+                        const negVec = extractHybridFeatureVector(negGame, null);
+                        mlpRanker.trainSample(negVec, 0.14);
+                    }
+                });
+            }
+
+            mlpRanker.saveWeights();
+            const epochBadge = document.getElementById('kiara-mlp-epochs');
+            if (epochBadge) epochBadge.textContent = `MLP • ${mlpRanker.trainSteps} steps`;
+        }
+
+        function recordInteraction(gameId) {
+            if (!gameId) return;
+            interactionSequence.push(gameId);
+            if (interactionSequence.length > 25) interactionSequence.shift();
+            localStorage.setItem('qway_markov_seq', JSON.stringify(interactionSequence));
+            trainMLPFromUserSignals(2);
+        }
+
+        // =========================================================================
+        // 2. KIARA: MULTI-TURN NATURAL LANGUAGE UNDERSTANDING & APP CONTROLLER
+        // =========================================================================
+        function resetKiaraMemory() {
+            kiaraConversationMemory = {
+                turnCount: 0,
+                lastQueryTokens: [],
+                lastRawQuery: "",
+                lastMatchedCategory: null,
+                offlineOnly: false,
+                onlineOnly: false,
+                maxSizeGB: null,
+                minSizeGB: null,
+                platform: null
+            };
+        }
+
+        function parseNaturalLanguageIntent(rawInput) {
+            const text = (rawInput || '').trim();
+            const lower = text.toLowerCase();
+
+            // Detect whether user is refining previous turn ("only offline", "under 20gb", "on steam", "what about epic", etc.)
+            const isFollowUpRefinement = kiaraConversationMemory.turnCount > 0 && (
+                /^(only|just|what about|how about|and|but|also|filter|make it|ones|those|which|under|below|less than|offline|online|on steam|on epic)\b/.test(lower) ||
+                text.split(/\s+/).length <= 4
+            );
+
+            const intent = {
+                rawQuery: text,
+                queryTokens: markovEngine.tokenize(text),
+                offlineOnly: isFollowUpRefinement ? kiaraConversationMemory.offlineOnly : false,
+                onlineOnly: isFollowUpRefinement ? kiaraConversationMemory.onlineOnly : false,
+                maxSizeGB: isFollowUpRefinement ? kiaraConversationMemory.maxSizeGB : null,
+                minSizeGB: isFollowUpRefinement ? kiaraConversationMemory.minSizeGB : null,
+                platform: isFollowUpRefinement ? kiaraConversationMemory.platform : null,
+                matchedCategory: isFollowUpRefinement ? kiaraConversationMemory.lastMatchedCategory : null,
+                action: 'search',
+                isFollowUp: isFollowUpRefinement,
+                reasons: []
+            };
+
+            // Detect Control Commands
+            if (/\b(reset|clear filter|show all|all games|everything|start over)\b/.test(lower)) {
+                intent.action = 'reset';
+                return intent;
+            }
+            if (/\b(compare|versus|vs|side by side)\b/.test(lower)) {
+                intent.action = 'compare';
+            }
+            if (/\b(my taste|wishlist|history|for me|recommend|surprise)\b/.test(lower) && intent.queryTokens.length <= 3) {
+                intent.action = 'recommend';
+            }
+
+            // Detect Free SSD Disk Space check request
+            if (/\b(free ssd|my ssd|my drive|disk space|free space|fits my)\b/.test(lower)) {
+                if (freeDiskGB !== null && freeDiskGB > 0) {
+                    intent.maxSizeGB = freeDiskGB;
+                } else {
+                    intent.maxSizeGB = 50;
+                }
+            }
+
+            // Detect Offline / Online constraints
+            if (/\b(offline|without internet|no internet|airplane|flight|single ?player|solo)\b/.test(lower) && !/\b(not offline|no offline)\b/.test(lower)) {
+                intent.offlineOnly = true;
+                intent.onlineOnly = false;
+            } else if (/\b(online|multiplayer|pvp|co-?op)\b/.test(lower)) {
+                intent.onlineOnly = true;
+                intent.offlineOnly = false;
+            } else if (/\b(any mode|both online and offline)\b/.test(lower)) {
+                intent.offlineOnly = false;
+                intent.onlineOnly = false;
+            }
+
+            // Detect Storage Size constraints
+            if (/\b(any size|no size limit|clear size)\b/.test(lower)) {
+                intent.maxSizeGB = null;
+                intent.minSizeGB = null;
+            } else {
+                const underMatch = lower.match(/(?:under|below|less than|max|within|<=|<)\s*(\d+(?:\.\d+)?)\s*(?:gb|gig)?/);
+                if (underMatch) {
+                    intent.maxSizeGB = parseFloat(underMatch[1]);
+                } else if (/\b(small|light|lightweight|low storage|tiny|compact)\b/.test(lower)) {
+                    intent.maxSizeGB = 20;
+                }
+
+                const overMatch = lower.match(/(?:over|above|more than|bigger than|>)\s*(\d+(?:\.\d+)?)\s*(?:gb|gig)?/);
+                if (overMatch) {
+                    intent.minSizeGB = parseFloat(overMatch[1]);
+                }
+            }
+
+            // Detect Platform constraints
+            if (/\b(steam)\b/.test(lower)) {
+                intent.platform = "Steam";
+            } else if (/\b(epic|epic games)\b/.test(lower)) {
+                intent.platform = "Epic Games";
+            } else if (/\b(any platform|both platforms)\b/.test(lower)) {
+                intent.platform = null;
+            }
+
+            // Map natural phrases to Q-Way Category Tabs
+            const categoryAliases = [
+                { cat: "Shooter", patterns: /\b(shooter|fps|gun|sniper|tactical|battle royale)\b/ },
+                { cat: "Open World", patterns: /\b(open world|open-world|explore|wuxia|tsushima|sandbox)\b/ },
+                { cat: "Action-Adventure", patterns: /\b(action|adventure|superhero|superman|story)\b/ },
+                { cat: "RPG.MMORPG", patterns: /\b(rpg|mmorpg|moba|dota|fantasy|hero|heroes)\b/ },
+                { cat: "Anime", patterns: /\b(anime|manga|gacha|jrpg)\b/ },
+                { cat: "SC-FI", patterns: /\b(sci-?fi|space|cyber|futuristic|mech|warframe)\b/ },
+                { cat: "Survival", patterns: /\b(survival|survive|craft|zombie)\b/ },
+                { cat: "Fast-Paced", patterns: /\b(fast|paced|speed|racing|adrenaline|intense)\b/ }
+            ];
+
+            for (const item of categoryAliases) {
+                if (item.patterns.test(lower)) {
+                    intent.matchedCategory = item.cat;
+                    break;
+                }
+            }
+
+            // Carry forward semantic query tokens on short follow-ups so context persists
+            if (isFollowUpRefinement && kiaraConversationMemory.lastQueryTokens.length > 0) {
+                const mergedTokens = Array.from(new Set([...kiaraConversationMemory.lastQueryTokens, ...intent.queryTokens]));
+                intent.queryTokens = mergedTokens;
+                intent.rawQuery = `${kiaraConversationMemory.lastRawQuery} ${text}`.trim();
+            }
+
+            // Build human-readable constraint summary
+            if (intent.offlineOnly) intent.reasons.push("Offline playable");
+            if (intent.onlineOnly) intent.reasons.push("Online multiplayer");
+            if (intent.maxSizeGB !== null) intent.reasons.push(`Under ${intent.maxSizeGB} GB`);
+            if (intent.minSizeGB !== null) intent.reasons.push(`Over ${intent.minSizeGB} GB`);
+            if (intent.platform) intent.reasons.push(intent.platform);
+            if (intent.matchedCategory) intent.reasons.push(intent.matchedCategory);
+
+            // Persist into multi-turn session memory
+            kiaraConversationMemory = {
+                turnCount: kiaraConversationMemory.turnCount + 1,
+                lastQueryTokens: intent.queryTokens,
+                lastRawQuery: intent.rawQuery,
+                lastMatchedCategory: intent.matchedCategory,
+                offlineOnly: intent.offlineOnly,
+                onlineOnly: intent.onlineOnly,
+                maxSizeGB: intent.maxSizeGB,
+                minSizeGB: intent.minSizeGB,
+                platform: intent.platform
+            };
+
+            return intent;
+        }
+
+        function isNaturalLanguageSentence(query) {
+            const words = query.trim().split(/\s+/);
+            if (words.length >= 3) return true;
+            return /\b(offline|under|below|small|light|like|similar|recommend|kiara|want|find|best|for me|ssd)\b/i.test(query);
+        }
+
+        function toggleKiaraPanel(forceOpen = null) {
+            const panel = document.getElementById('kiara-panel');
+            const summonBtn = document.getElementById('kiara-summon-btn');
+            const isHidden = panel.classList.contains('hidden');
+            const shouldOpen = forceOpen !== null ? forceOpen : isHidden;
+
+            if (shouldOpen) {
+                panel.classList.remove('hidden');
+                panel.classList.remove('kiara-panel-emerge');
+                void panel.offsetWidth;
+                panel.classList.add('kiara-panel-emerge');
+                summonBtn.classList.add('scale-90', 'opacity-0', 'pointer-events-none');
+
+                const messagesBox = document.getElementById('kiara-messages');
+                if (messagesBox.children.length === 0) {
+                    appendKiaraGreeting();
+                }
+                setTimeout(() => document.getElementById('kiara-input').focus(), 120);
+            } else {
+                panel.classList.add('hidden');
+                summonBtn.classList.remove('scale-90', 'opacity-0', 'pointer-events-none');
+            }
+        }
+
+        function appendKiaraGreeting() {
+            const box = document.getElementById('kiara-messages');
+            let personalizedHint = `Try: <em>"Offline action game under 15 GB"</em> or <em>"Games like Ghost of Tsushima"</em>.`;
+
+            if (wishlist.length > 0) {
+                const topGenre = wishlist[0].genre;
+                personalizedHint = `I see <strong>${escapeHtml(wishlist[0].title)}</strong> (${escapeHtml(topGenre)}) in your wishlist—ask me for similar titles or follow up with size/offline limits anytime!`;
+            } else if (freeDiskGB !== null && freeDiskGB > 0) {
+                personalizedHint = `You have <strong>${freeDiskGB} GB</strong> free SSD space set—ask me <em>"Fit my free SSD space"</em> to filter games that fit right now.`;
+            }
+
+            box.innerHTML = `
+                <div class="flex items-start gap-2.5">
+                    <div class="w-7 h-7 rounded-xl bg-gradient-to-tr from-neonCyan to-purple-500 flex items-center justify-center text-darkBg font-bold text-xs shrink-0 mt-0.5">
+                        <i class="fa-solid fa-sparkles"></i>
+                    </div>
+                    <div class="glass-card p-3 rounded-2xl rounded-tl-sm border border-purple-400/25 space-y-1.5 text-xs leading-relaxed">
+                        <p class="font-bold text-neonCyan">Hey! I’m Kiara, your offline Q-Way co-pilot.</p>
+                        <p class="text-gray-300">Ask me naturally what mood, storage limit, or AAA vibe you want—and feel free to follow up with refinements like <em>"only offline"</em> or <em>"under 20 GB"</em>.</p>
+                        <p class="text-[11px] text-gray-400">${personalizedHint}</p>
+                    </div>
+                </div>
+            `;
+        }
+
+        function askKiaraPreset(promptText) {
+            const input = document.getElementById('kiara-input');
+            input.value = promptText;
+            processKiaraCommand(promptText, true);
+        }
+
+        function handleKiaraSubmit(e) {
+            e.preventDefault();
+            const input = document.getElementById('kiara-input');
+            const promptText = input.value.trim();
+            if (!promptText) return;
+            input.value = "";
+            processKiaraCommand(promptText, true);
+        }
+
+        function resetKiaraControl() {
+            kiaraFilterState = {
+                active: false,
+                offlineOnly: false,
+                onlineOnly: false,
+                maxSizeGB: null,
+                minSizeGB: null,
+                platform: null,
+                matchedCategory: null,
+                rankedGameIds: null,
+                summaryText: ""
+            };
+            resetKiaraMemory();
+            document.getElementById('kiara-active-filter-banner').classList.add('hidden');
+            document.getElementById('kiara-control-summary').textContent = "Ready to control search, filters & picks";
+            document.getElementById('main-app-shell').classList.remove('kiara-control-glow');
+            currentCategory = "Featured";
+            searchQuery = "";
+            document.getElementById('global-search').value = "";
+            updateSearchClearUI();
+            renderCategories();
+            renderGames();
+            showToast("Kiara reset all app filters.");
+        }
+
+        function processKiaraCommand(userPrompt, openDrawer = true) {
+            if (openDrawer) toggleKiaraPanel(true);
+
+            const messagesBox = document.getElementById('kiara-messages');
+            const userBubble = document.createElement('div');
+            userBubble.className = "flex justify-end";
+            userBubble.innerHTML = `
+                <div class="max-w-[85%] px-3.5 py-2.5 rounded-2xl rounded-tr-sm bg-gradient-to-r from-neonCyan/20 to-purple-500/25 border border-neonCyan/30 text-xs text-white font-medium">
+                    ${escapeHtml(userPrompt)}
+                </div>
+            `;
+            messagesBox.appendChild(userBubble);
+
+            recordSearchHistory(userPrompt);
+            const intent = parseNaturalLanguageIntent(userPrompt);
+
+            if (intent.action === 'reset') {
+                resetKiaraControl();
+                appendKiaraResponseBubble(
+                    "Done! I’ve cleared all filters and conversation constraints, restoring the full **Featured Free Games** catalog for you.",
+                    []
+                );
+                return;
+            }
+
+            trainMLPFromUserSignals(2);
+
+            let candidates = gamesData.filter(g => {
+                if (intent.offlineOnly && !g.playMode.toLowerCase().includes('offline')) return false;
+                if (intent.onlineOnly && g.playMode.toLowerCase() === 'offline') return false;
+                if (intent.maxSizeGB !== null && g.sizeGB > intent.maxSizeGB) return false;
+                if (intent.minSizeGB !== null && g.sizeGB < intent.minSizeGB) return false;
+                if (intent.platform && g.platform.toLowerCase() !== intent.platform.toLowerCase()) return false;
+                return true;
+            });
+
+            let relaxedNotice = "";
+            if (candidates.length === 0) {
+                candidates = [...gamesData];
+                relaxedNotice = "No game matched every strict constraint simultaneously, so I relaxed the filters to show your closest semantic & MLP matches: ";
+            }
+
+            const scored = candidates.map(game => {
+                const vec = extractHybridFeatureVector(game, intent);
+                const mlpProb = mlpRanker.predict(vec);
+                const finalScore = intent.queryTokens.length > 0
+                    ? (0.62 * mlpProb) + (0.38 * vec[7])
+                    : mlpProb;
+
+                return {
+                    game,
+                    score: finalScore,
+                    vec,
+                    why: buildExplainableReason(game, vec, intent)
+                };
+            });
+
+            scored.sort((a, b) => b.score - a.score);
+            const topMatches = scored.slice(0, 3);
+
+            applyKiaraControlToApp(intent, scored, topMatches);
+
+            if (intent.action === 'compare' && topMatches.length >= 2) {
+                compareList = topMatches.slice(0, 3).map(m => m.game);
+                document.getElementById('compare-badge').textContent = compareList.length;
+                document.getElementById('compare-badge').classList.remove('hidden');
+                renderGames();
+                openCompareModal();
+            }
+
+            const filterSummary = intent.reasons.length > 0
+                ? intent.reasons.join(' • ')
+                : 'Personalized Markov + MLP Ranking';
+
+            const followUpPrefix = intent.isFollowUp ? "Updated with your follow-up (" : "I updated the catalog (";
+            const replyText = relaxedNotice
+                ? `${relaxedNotice}Here are the top picks for **${escapeHtml(userPrompt)}**:`
+                : `${followUpPrefix}**${filterSummary}**) and ranked your best matches with my 3-Layer MLP:`;
+
+            appendKiaraResponseBubble(replyText, topMatches);
+        }
+
+        function buildExplainableReason(game, vec, intent) {
+            const reasons = [];
+            if (intent.offlineOnly && game.playMode.toLowerCase().includes('offline')) {
+                reasons.push("Playable offline");
+            }
+            if (intent.maxSizeGB !== null && game.sizeGB <= intent.maxSizeGB) {
+                reasons.push(`Fits under ${intent.maxSizeGB} GB (${game.approxSize})`);
+            }
+            if (vec[7] >= 0.55) {
+                reasons.push("Strong query match");
+            } else if (vec[0] >= 0.45) {
+                reasons.push("Markov sequence match");
+            } else if (vec[2] >= 0.50) {
+                reasons.push("Matches your genre taste");
+            } else {
+                reasons.push(`${game.genre} • ${game.approxSize}`);
+            }
+            return reasons.slice(0, 2).join(" • ");
+        }
+
+        function applyKiaraControlToApp(intent, scoredList, topMatches) {
+            const rankedIds = scoredList.map(s => s.game.id);
+            const summaryParts = [];
+            if (intent.offlineOnly) summaryParts.push("Offline Playable");
+            if (intent.onlineOnly) summaryParts.push("Online");
+            if (intent.maxSizeGB !== null) summaryParts.push(`≤ ${intent.maxSizeGB} GB`);
+            if (intent.platform) summaryParts.push(intent.platform);
+            if (intent.matchedCategory) summaryParts.push(intent.matchedCategory);
+            if (summaryParts.length === 0) summaryParts.push(`AI Match: "${intent.rawQuery}"`);
+
+            const summaryLabel = summaryParts.join(" • ");
+
+            kiaraFilterState = {
+                active: true,
+                offlineOnly: intent.offlineOnly,
+                onlineOnly: intent.onlineOnly,
+                maxSizeGB: intent.maxSizeGB,
+                minSizeGB: intent.minSizeGB,
+                platform: intent.platform,
+                matchedCategory: intent.matchedCategory,
+                rankedGameIds: rankedIds,
+                summaryText: summaryLabel
+            };
+
+            if (intent.matchedCategory && CATEGORIES.includes(intent.matchedCategory)) {
+                currentCategory = intent.matchedCategory;
+            } else if (intent.offlineOnly) {
+                currentCategory = "Offline Playable";
+            } else if (intent.maxSizeGB !== null && intent.maxSizeGB <= 25) {
+                currentCategory = "Under 25 GB";
+            } else if (intent.platform && CATEGORIES.includes(intent.platform)) {
+                currentCategory = intent.platform;
+            } else {
+                currentCategory = "Featured";
+            }
+
+            searchQuery = "";
+            renderCategories();
+            renderGames();
+
+            const banner = document.getElementById('kiara-active-filter-banner');
+            banner.classList.remove('hidden');
+            document.getElementById('kiara-active-filter-text').innerHTML = `<strong>Kiara Active Control:</strong> ${escapeHtml(summaryLabel)} (Ranked by 3-Layer MLP)`;
+            document.getElementById('kiara-control-summary').textContent = `Controlling: ${summaryLabel}`;
+
+            const shell = document.getElementById('main-app-shell');
+            shell.classList.add('kiara-control-glow');
+            setTimeout(() => shell.classList.remove('kiara-control-glow'), 1800);
+
+            const catalogSection = document.getElementById('catalog-section');
+            if (catalogSection) {
+                catalogSection.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            }
+
+            renderKiaraInfluencedFeed(topMatches);
+        }
+
+        function appendKiaraResponseBubble(htmlText, topMatches) {
+            const messagesBox = document.getElementById('kiara-messages');
+            const formattedText = htmlText.replace(/\*\*(.*?)\*\*/g, '<strong class="text-neonCyan">$1</strong>');
+
+            const cardsHtml = topMatches.map(item => {
+                const g = item.game;
+                const pct = Math.min(99, Math.max(62, Math.round(item.score * 100)));
+                return `
+                    <div class="p-2.5 rounded-xl bg-darkBg/70 border border-white/10 hover:border-neonCyan/40 transition-all flex items-center gap-2.5">
+                        <img src="${g.thumbnail}" alt="${g.title}" class="w-14 h-12 object-cover rounded-lg shrink-0 cursor-pointer" onclick="openGameModal(${g.id})" onerror="this.onerror=null; this.src=getRandomFallback();">
+                        <div class="flex-1 min-w-0">
+                            <div class="flex items-center justify-between gap-1">
+                                <h4 onclick="openGameModal(${g.id})" class="font-bold text-xs truncate cursor-pointer hover:text-neonCyan">${g.title}</h4>
+                                <span class="text-[10px] font-mono font-bold text-neonCyan shrink-0">${pct}%</span>
+                            </div>
+                            <p class="text-[10px] text-purple-200/90 truncate mt-0.5">${item.why}</p>
+                            <div class="flex items-center justify-between mt-1.5">
+                                <span class="text-[10px] text-amber-300 font-mono">${g.approxSize} • ${g.platform}</span>
+                                <div class="flex items-center gap-1.5">
+                                    <button onclick="toggleWishlist(${g.id})" class="text-[11px] text-gray-300 hover:text-red-400" title="Wishlist"><i class="fa-solid fa-heart"></i></button>
+                                    <button onclick="openStoreLink('${g.storeUrl}', '${g.title}', ${g.id})" class="text-[10px] px-2 py-0.5 rounded bg-neonCyan/20 text-neonCyan font-bold hover:bg-neonCyan hover:text-darkBg transition-colors">Store</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+
+            const wrapper = document.createElement('div');
+            wrapper.className = "flex items-start gap-2.5";
+            wrapper.innerHTML = `
+                <div class="w-7 h-7 rounded-xl bg-gradient-to-tr from-neonCyan to-purple-500 flex items-center justify-center text-darkBg font-bold text-xs shrink-0 mt-0.5">
+                    <i class="fa-solid fa-sparkles"></i>
+                </div>
+                <div class="flex-1 glass-card p-3 rounded-2xl rounded-tl-sm border border-purple-400/25 space-y-2.5 text-xs">
+                    <p class="text-gray-200 leading-relaxed">${formattedText}</p>
+                    ${cardsHtml ? `<div class="space-y-2">${cardsHtml}</div>` : ''}
+                </div>
+            `;
+            messagesBox.appendChild(wrapper);
+            messagesBox.scrollTop = messagesBox.scrollHeight;
+        }
+
+        function escapeHtml(str) {
+            return String(str)
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;');
+        }
+
+        // =========================================================================
+        // 3. TOAST NOTIFICATION & INSTANT QUICK-SHARE HELPERS
+        // =========================================================================
+        function showToast(msg) {
+            const toast = document.getElementById('toast-notification');
+            document.getElementById('toast-message').textContent = msg;
+            toast.classList.remove('translate-y-20', 'opacity-0');
+            clearTimeout(toastTimeout);
+            toastTimeout = setTimeout(() => {
+                toast.classList.add('translate-y-20', 'opacity-0');
+            }, 3000);
+        }
+
+        function slugifyTitle(title) {
+            return title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
+        }
+
+        async function shareGame(id) {
+            const game = gamesData.find(g => g.id === id);
+            if (!game) return;
+
+            const slug = slugifyTitle(game.title);
+            const shareUrl = `${window.location.origin}${window.location.pathname}#game=${slug}`;
+            const shareText = `Check out ${game.title} (${game.approxSize} • ${game.playMode}) on Q-Way Free Game Hub!`;
+
+            history.replaceState(null, null, `#game=${slug}`);
+
+            if (navigator.share) {
+                try {
+                    await navigator.share({
+                        title: `${game.title} | Q-Way Game Hub`,
+                        text: shareText,
+                        url: shareUrl
+                    });
+                    return;
+                } catch (err) {}
+            }
+
+            try {
+                await navigator.clipboard.writeText(shareUrl);
+                showToast(`Share link copied for "${game.title}"!`);
+            } catch (err) {
+                const tempInput = document.createElement('input');
+                tempInput.value = shareUrl;
+                document.body.appendChild(tempInput);
+                tempInput.select();
+                document.execCommand('copy');
+                document.body.removeChild(tempInput);
+                showToast(`Share link copied for "${game.title}"!`);
+            }
+        }
+
+        function checkDeepLinkOnLoad() {
+            const hash = window.location.hash;
+            if (hash && hash.startsWith('#game=')) {
+                const targetSlug = hash.replace('#game=', '').toLowerCase();
+                const matchedGame = gamesData.find(g => slugifyTitle(g.title) === targetSlug);
+                if (matchedGame) {
+                    openGameModal(matchedGame.id);
+                }
+            }
+        }
+
+        // =========================================================================
+        // 4. SEARCH BAR CLEAR BUTTON & KEYBOARD SHORTCUTS ('/', 'Escape', 'Alt+K')
+        // =========================================================================
+        function updateSearchClearUI() {
+            const searchInput = document.getElementById('global-search');
+            const clearBtn = document.getElementById('search-clear-btn');
+            const slashHint = document.getElementById('search-slash-hint');
+            const hasValue = searchInput && searchInput.value.length > 0;
+
+            if (clearBtn) clearBtn.classList.toggle('hidden', !hasValue);
+            if (slashHint) slashHint.classList.toggle('sm:hidden', hasValue);
+        }
+
+        function clearSearchBar(keepFocus = true) {
+            const searchInput = document.getElementById('global-search');
+            searchInput.value = "";
+            searchQuery = "";
+            updateSearchClearUI();
+            hideSearchHistoryDropdown();
+            if (kiaraFilterState.active) {
+                resetKiaraControl();
+            } else {
+                renderGames();
+            }
+            if (keepFocus) searchInput.focus();
+        }
+
+        document.addEventListener('keydown', (e) => {
+            const searchInput = document.getElementById('global-search');
+            const activeTag = document.activeElement ? document.activeElement.tagName : '';
+            const isTypingInInput = activeTag === 'INPUT' || activeTag === 'TEXTAREA' || document.activeElement?.isContentEditable;
+
+            if (e.altKey && e.key.toLowerCase() === 'k') {
+                e.preventDefault();
+                toggleKiaraPanel();
+                return;
+            }
+
+            if (e.key === '/' && !e.ctrlKey && !e.metaKey && !e.altKey && !isTypingInInput) {
+                e.preventDefault();
+                searchInput.focus();
+                searchInput.select();
+                if (searchInput.value.length > 0 && historyEnabled) {
+                    showSearchHistoryDropdown();
+                }
+                return;
+            }
+
+            if (e.key === 'Escape') {
+                const gameModal = document.getElementById('game-modal');
+                const compareModal = document.getElementById('compare-modal');
+                const kiaraPanel = document.getElementById('kiara-panel');
+                const sidebar = document.getElementById('sidebar');
+                const historyDropdown = document.getElementById('search-history-dropdown');
+
+                if (!gameModal.classList.contains('hidden')) {
+                    closeGameModal();
+                    return;
+                }
+                if (!compareModal.classList.contains('hidden')) {
+                    closeCompareModal();
+                    return;
+                }
+                if (!kiaraPanel.classList.contains('hidden')) {
+                    toggleKiaraPanel(false);
+                    return;
+                }
+                if (!sidebar.classList.contains('-translate-x-full')) {
+                    toggleSidebar();
+                    return;
+                }
+                if (!historyDropdown.classList.contains('hidden')) {
+                    hideSearchHistoryDropdown();
+                    return;
+                }
+                if (document.activeElement === searchInput) {
+                    if (searchInput.value.length > 0) {
+                        clearSearchBar(false);
+                    }
+                    searchInput.blur();
+                }
+            }
+        });
+
+        // =========================================================================
+        // 5. REMAINING FREE DISK SPACE & FULL LIBRARY EXPORT / IMPORT
+        // =========================================================================
+        function updateFreeDiskSpace(val) {
+            const num = parseFloat(val);
+            if (!isNaN(num) && num > 0) {
+                freeDiskGB = num;
+                localStorage.setItem('qway_free_disk_gb', String(num));
+            } else {
+                freeDiskGB = null;
+                localStorage.removeItem('qway_free_disk_gb');
+            }
+            updateSidebarCounts();
+            renderGames();
+        }
+
+        function filterCatalogByFreeSpace() {
+            if (!freeDiskGB || freeDiskGB <= 0) {
+                showToast("Enter your available SSD space in GB first.");
+                const inp = document.getElementById('free-disk-input');
+                if (inp) inp.focus();
+                return;
+            }
+            kiaraFilterState = {
+                active: true,
+                offlineOnly: false,
+                onlineOnly: false,
+                maxSizeGB: freeDiskGB,
+                minSizeGB: null,
+                platform: null,
+                matchedCategory: null,
+                rankedGameIds: null,
+                summaryText: `Fits Free SSD (≤ ${freeDiskGB} GB)`
+            };
+            document.getElementById('kiara-active-filter-banner').classList.remove('hidden');
+            document.getElementById('kiara-active-filter-text').innerHTML = `<strong>SSD Space Filter:</strong> Showing games ≤ ${freeDiskGB} GB`;
+            renderGames();
+            toggleSidebar();
+            showToast(`Filtered games fitting within ${freeDiskGB} GB!`);
+        }
+
+        function exportWishlist() {
+            if (wishlist.length === 0 && downloaded.length === 0) {
+                showToast("Your library is empty—nothing to export yet!");
+                return;
+            }
+
+            const payload = {
+                app: "Q-Way Game Hub",
+                exportedAt: new Date().toISOString(),
+                wishlistCount: wishlist.length,
+                playedCount: downloaded.length,
+                freeDiskGB: freeDiskGB,
+                wishlist: wishlist,
+                played: downloaded
+            };
+
+            const jsonString = JSON.stringify(payload, null, 2);
+            const blob = new Blob([jsonString], { type: "application/json" });
+            const url = URL.createObjectURL(blob);
+
+            const dateStamp = new Date().toISOString().slice(0, 10);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `qway-library-${dateStamp}.json`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+
+            showToast(`Exported ${wishlist.length} wishlist & ${downloaded.length} played games!`);
+        }
+
+        function triggerWishlistImport() {
+            const input = document.getElementById('wishlist-import-input');
+            input.value = "";
+            input.click();
+        }
+
+        function normalizeImportedGame(item) {
+            const catalogMatch = gamesData.find(
+                g => (item.appId && String(g.appId) === String(item.appId)) ||
+                     g.title.toLowerCase() === item.title.toLowerCase()
+            );
+
+            return catalogMatch || {
+                id: item.id || Date.now() + Math.floor(Math.random() * 10000),
+                title: item.title,
+                appId: item.appId || '',
+                playMode: item.playMode || 'Online',
+                availability: item.availability || 'Full Game',
+                genre: item.genre || 'Action',
+                approxSize: item.approxSize || '25 GB',
+                sizeGB: item.sizeGB || parseSizeToGB(item.approxSize || '25 GB'),
+                features: item.features || 'Imported game.',
+                similarTo: item.similarTo || '',
+                notes: item.notes || '',
+                platform: item.platform || 'Steam',
+                storeUrl: item.storeUrl || '#',
+                thumbnail: item.thumbnail || getRandomFallback(),
+                videoUrl: item.videoUrl || ''
+            };
+        }
+
+        function handleWishlistImport(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const shouldMerge = document.getElementById('import-merge-toggle')?.checked !== false;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const parsed = JSON.parse(e.target.result);
+                    const importedWishlist = Array.isArray(parsed) ? parsed : parsed.wishlist;
+                    const importedPlayed = Array.isArray(parsed?.played) ? parsed.played : [];
+
+                    if (!Array.isArray(importedWishlist)) {
+                        showToast("Invalid library JSON format.");
+                        return;
+                    }
+
+                    if (!shouldMerge) {
+                        wishlist = [];
+                        downloaded = [];
+                    }
+
+                    let addedWishlist = 0;
+                    importedWishlist.forEach(item => {
+                        if (!item || !item.title) return;
+                        const gameToSave = normalizeImportedGame(item);
+                        const exists = wishlist.some(w => w.title.toLowerCase() === gameToSave.title.toLowerCase());
+                        if (!exists) {
+                            wishlist.push(gameToSave);
+                            addedWishlist++;
+                        }
+                    });
+
+                    let addedPlayed = 0;
+                    importedPlayed.forEach(item => {
+                        if (!item || !item.title) return;
+                        const gameToSave = normalizeImportedGame(item);
+                        const exists = downloaded.some(d => d.title.toLowerCase() === gameToSave.title.toLowerCase());
+                        if (!exists) {
+                            downloaded.push(gameToSave);
+                            addedPlayed++;
+                        }
+                    });
+
+                    if (parsed.freeDiskGB && !freeDiskGB) {
+                        freeDiskGB = parseFloat(parsed.freeDiskGB);
+                        localStorage.setItem('qway_free_disk_gb', String(freeDiskGB));
+                        const diskInp = document.getElementById('free-disk-input');
+                        if (diskInp) diskInp.value = freeDiskGB;
+                    }
+
+                    updateSidebarCounts();
+                    renderGames();
+                    computeHybridRecommendations(true);
+
+                    const totalAdded = addedWishlist + addedPlayed;
+                    if (totalAdded > 0) {
+                        showToast(`${shouldMerge ? 'Merged' : 'Restored'} ${addedWishlist} wishlist & ${addedPlayed} played games!`);
+                    } else {
+                        showToast("All games in that backup are already in your library.");
+                    }
+                } catch (err) {
+                    showToast("Could not read file—please select a valid JSON backup.");
+                }
+            };
+            reader.readAsText(file);
+        }
+
+        // =========================================================================
+        // 6. STORAGE SIZE & CONNECTIVITY VISUAL BADGE HELPERS
+        // =========================================================================
+        function parseSizeToGB(sizeStr) {
+            if (!sizeStr) return 20;
+            const str = String(sizeStr).toUpperCase();
+            const num = parseFloat(str.replace(/[^0-9.]/g, ''));
+            if (isNaN(num)) return 20;
+            if (str.includes('MB')) return Math.max(0.5, +(num / 1024).toFixed(1));
+            if (str.includes('TB')) return +(num * 1024).toFixed(1);
+            return num;
+        }
+
+        function estimateDefaultSize(genre, platform, title) {
+            const g = (genre + ' ' + title).toLowerCase();
+            if (g.includes('genshin') || g.includes('star rail') || g.includes('open world') || g.includes('mmorpg')) return '65 GB';
+            if (g.includes('shooter') || g.includes('fps') || g.includes('battle royale')) return '35 GB';
+            if (g.includes('racing') || g.includes('vehicular') || g.includes('survival')) return '22 GB';
+            if (g.includes('indie') || g.includes('undefeated') || g.includes('rush')) return '6 GB';
+            return platform === 'Epic Games' ? '40 GB' : '25 GB';
+        }
+
+        function getConnectivityBadge(playMode) {
+            const mode = (playMode || 'Online').toLowerCase();
+            if (mode.includes('offline') && mode.includes('online')) {
+                return `<span class="inline-flex items-center gap-1 text-[10px] px-2 py-0.5 rounded-md bg-purple-500/15 text-purple-300 border border-purple-500/30 font-semibold"><i class="fa-solid fa-wifi text-[9px]"></i> Online & Offline</span>`;
+            }
+            if (mode.includes('offline') || mode.includes('single')) {
+                return `<span class="inline-flex items-center gap-1 text-[10px] px-2 py-0.5 rounded-md bg-emerald-500/15 text-emerald-300 border border-emerald-500/30 font-semibold"><i class="fa-solid fa-plane-up text-[9px]"></i> Playable Offline</span>`;
+            }
+            return `<span class="inline-flex items-center gap-1 text-[10px] px-2 py-0.5 rounded-md bg-sky-500/15 text-sky-300 border border-sky-500/30 font-semibold"><i class="fa-solid fa-globe text-[9px]"></i> Online Multiplayer</span>`;
+        }
+
+        function initPWA() {
+            const startUrl = window.location.origin + window.location.pathname;
+            const manifest = {
+                name: "Q - Way Game Hub",
+                short_name: "Q-Way",
+                start_url: startUrl,
+                display: "standalone",
+                background_color: "#05070a",
+                theme_color: "#00f2fe",
+                icons: [
+                    { 
+                        src: "icon.png", 
+                        sizes: "512x512", 
+                        type: "image/png",
+                        purpose: "any maskable"
+                    }
+                ]
+            };
+            const blob = new Blob([JSON.stringify(manifest)], {type: 'application/json'});
+            document.getElementById('pwa-manifest').href = URL.createObjectURL(blob);
+
+            window.addEventListener('beforeinstallprompt', (e) => {
+                e.preventDefault();
+                deferredPrompt = e;
+                document.getElementById('pwa-install-btn').classList.remove('hidden');
+                document.getElementById('pwa-install-btn').classList.add('flex');
+            });
+        }
+
+        function installPWA() {
+            if (deferredPrompt) {
+                deferredPrompt.prompt();
+                deferredPrompt.userChoice.then((choiceResult) => {
+                    if (choiceResult.outcome === 'accepted') {
+                        document.getElementById('pwa-install-btn').classList.add('hidden');
+                    }
+                    deferredPrompt = null;
+                });
+            } else {
+                showToast("Use your browser menu → 'Install App' or 'Add to Home Screen'.");
+            }
+        }
+
+        window.addEventListener('DOMContentLoaded', () => {
+            initPWA();
+            if (freeDiskGB !== null) {
+                const diskInp = document.getElementById('free-disk-input');
+                if (diskInp) diskInp.value = freeDiskGB;
+            }
+            renderCategories();
+            updateSidebarCounts();
+            updateSingleTabUI();
+            updateSearchClearUI();
+            fetchGameCatalog();
+
+            const searchInput = document.getElementById('global-search');
+            let nlDebounce = null;
+
+            searchInput.addEventListener('input', (e) => {
+                searchQuery = e.target.value.trim();
+                updateSearchClearUI();
+                clearTimeout(nlDebounce);
+
+                if (searchQuery.length > 0 && historyEnabled) showSearchHistoryDropdown();
+                else hideSearchHistoryDropdown();
+
+                if (searchQuery.length >= 10 && isNaturalLanguageSentence(searchQuery)) {
+                    nlDebounce = setTimeout(() => {
+                        hideSearchHistoryDropdown();
+                        processKiaraCommand(searchQuery, true);
+                    }, 650);
+                } else {
+                    if (kiaraFilterState.active && searchQuery === "") {
+                        resetKiaraControl();
+                    } else {
+                        renderGames();
+                    }
+                }
+            });
+
+            searchInput.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter' && searchInput.value.trim().length > 0) {
+                    e.preventDefault();
+                    clearTimeout(nlDebounce);
+                    hideSearchHistoryDropdown();
+                    const q = searchInput.value.trim();
+                    if (isNaturalLanguageSentence(q)) {
+                        processKiaraCommand(q, true);
+                    } else {
+                        recordSearchHistory(q);
+                        renderGames();
+                    }
+                }
+            });
+        });
+
+        function openStoreLink(url, title, gameId = null) {
+            recordSearchHistory(title);
+            if (gameId) recordInteraction(gameId);
+            const target = singleTabMode ? 'QWayStoreTab' : '_blank';
+            window.open(url, target);
+        }
+
+        function toggleSingleTabMode() {
+            singleTabMode = !singleTabMode;
+            localStorage.setItem('qway_single_tab', singleTabMode);
+            updateSingleTabUI();
+            renderGames();
+        }
+
+        function updateSingleTabUI() {
+            const btn = document.getElementById('single-tab-btn');
+            const label = document.getElementById('single-tab-label');
+            const icon = document.getElementById('single-tab-icon');
+            
+            if (singleTabMode) {
+                btn.className = "px-2.5 sm:px-3 py-2 rounded-xl glass-card text-neonCyan border border-neonCyan/40 flex items-center gap-1.5 text-xs font-semibold transition-all shadow-md";
+                if(label) label.textContent = "Single Tab: ON";
+                icon.className = "fa-solid fa-window-restore text-neonCyan";
+            } else {
+                btn.className = "px-2.5 sm:px-3 py-2 rounded-xl glass-card text-gray-400 border border-gray-700/40 flex items-center gap-1.5 text-xs font-semibold transition-all hover:text-white";
+                if(label) label.textContent = "Single Tab: OFF";
+                icon.className = "fa-solid fa-window-maximize text-gray-400";
+            }
+        }
+
+        async function fetchGameCatalog() {
+            const syncStatus = document.getElementById('sync-status');
+            syncStatus.textContent = "Loading JSON...";
+            try {
+                const response = await fetch('games.json');
+                if (!response.ok) throw new Error('Network response was not ok');
+                const rows = await response.json();
+                
+                if (Array.isArray(rows) && rows.length > 0) {
+                    gamesData = rows.map((r, i) => parseSheetRow(r, i));
+                    syncStatus.textContent = "GitHub JSON Active";
+                    renderGames();
+                    computeHybridRecommendations(true);
+                    updateSidebarCounts();
+                    checkDeepLinkOnLoad();
+                } else {
+                    syncStatus.textContent = "JSON Empty (Using Backup)";
+                    buildCatalogFromDataset();
+                }
+            } catch (error) {
+                syncStatus.textContent = "JSON Failed (Using Backup)";
+                buildCatalogFromDataset();
+            }
+        }
+
+        function getProp(obj, keys) {
+            for (let k of keys) {
+                for (let prop in obj) {
+                    if (prop.trim().toLowerCase() === k.toLowerCase()) {
+                        return obj[prop];
+                    }
+                }
+            }
+            return '';
+        }
+
+        function parseSheetRow(r, i) {
+            const title = getProp(r, ['Game Title', 'Title', 'Name', 'title']) || 'Untitled Game';
+            const appId = getProp(r, ['Steam App ID', 'App ID', 'Steam ID', 'app_id', 'appId']) || '';
+            const status = getProp(r, ['Status / Availability', 'Availability', 'Status', 'status']) || 'Full Game (Steam)';
+            const isEpic = status.toLowerCase().includes('epic') || !appId;
+            const platform = isEpic ? 'Epic Games' : 'Steam';
+            const genre = getProp(r, ['Genre / Style', 'Genre', 'genre']) || 'Action';
+            const rawSize = getProp(r, ['Approx Size', 'Storage Size', 'Size', 'size', 'approxSize']);
+            const approxSize = rawSize ? String(rawSize).trim() : estimateDefaultSize(genre, platform, title);
+
+            let thumbnail = getProp(r, ['Header Image URL', 'Image URL', 'Thumbnail', 'thumbnail']) || '';
+            let videoUrl = getProp(r, ['Video Preview URL', 'Video URL', 'Trailer', 'videoUrl']) || '';
+
+            if (appId && !thumbnail) {
+                thumbnail = `https://cdn.cloudflare.steamstatic.com/steam/apps/${appId}/header.jpg`;
+            }
+            if (appId && !videoUrl) {
+                videoUrl = `https://cdn.cloudflare.steamstatic.com/steam/apps/${appId}/movie480.mp4`;
+            }
+
+            if (platform === 'Epic Games') {
+                if (!thumbnail) thumbnail = getRandomFallback();
+                if (!videoUrl) videoUrl = "https://cdn2.unrealengine.com/fortnite-chapter-4-season-4-trailer-1920x1080-681b93f6.mp4";
+            }
+
+            return {
+                id: i + 1,
+                title: title,
+                appId: appId,
+                playMode: getProp(r, ['Play Mode', 'Mode', 'playMode']) || 'Online',
+                availability: status,
+                genre: genre,
+                approxSize: approxSize,
+                sizeGB: parseSizeToGB(approxSize),
+                features: getProp(r, ["Key Features & Why It's Awesome", 'Features', 'Description', 'features']) || 'High-graphics free game.',
+                similarTo: getProp(r, ['Similar To / AAA Alternative', 'Similar To', 'Alternative', 'similarTo']) || 'AAA Alternative',
+                notes: getProp(r, ['Personal Rating / Notes', 'Notes', 'notes']) || '',
+                platform: platform,
+                storeUrl: getProp(r, ['Store URL', 'Link', 'storeUrl']) || (platform === 'Epic Games' ? `https://store.epicgames.com/en-US/browse?q=${encodeURIComponent(title)}` : `https://store.steampowered.com/app/${appId}/`),
+                thumbnail: thumbnail || getRandomFallback(),
+                videoUrl: videoUrl
+            };
+        }
+
+        function buildCatalogFromDataset() {
+            gamesData = FALLBACK_CATALOG.map((item, idx) => {
+                const appId = item.app_id;
+                let thumbnail = appId ? `https://cdn.cloudflare.steamstatic.com/steam/apps/${appId}/header.jpg` : getRandomFallback();
+                let videoUrl = appId ? `https://cdn.cloudflare.steamstatic.com/steam/apps/${appId}/movie480.mp4` : "";
+                let storeUrl = appId ? `https://store.steampowered.com/app/${appId}/` : `#`;
+                const approxSize = item.approxSize || estimateDefaultSize(item.genre, item.platform, item.title);
+
+                return {
+                    id: idx + 1,
+                    title: item.title,
+                    appId: appId,
+                    playMode: item.playMode,
+                    availability: item.availability,
+                    genre: item.genre,
+                    approxSize: approxSize,
+                    sizeGB: parseSizeToGB(approxSize),
+                    features: item.features,
+                    similarTo: item.similarTo,
+                    notes: "High visual fidelity.",
+                    platform: item.platform,
+                    storeUrl: storeUrl,
+                    thumbnail: thumbnail,
+                    videoUrl: videoUrl
+                };
+            });
+            renderGames();
+            computeHybridRecommendations(true);
+            updateSidebarCounts();
+            checkDeepLinkOnLoad();
+        }
+
+        function renderCategories() {
+            const container = document.getElementById('category-tabs');
+            container.innerHTML = CATEGORIES.map(cat => `
+                <button onclick="selectCategory('${cat}')" class="px-4 py-2 rounded-xl text-sm font-medium whitespace-nowrap transition-all ${currentCategory === cat ? 'bg-gradient-to-r from-neonCyan to-neonPurple text-darkBg font-bold shadow-md' : 'glass-card hover:bg-white/10 text-gray-300'}">
+                    ${cat}
+                </button>
+            `).join('');
+        }
+
+        function selectCategory(cat) {
+            if (kiaraFilterState.active) {
+                kiaraFilterState.active = false;
+                kiaraFilterState.rankedGameIds = null;
+                document.getElementById('kiara-active-filter-banner').classList.add('hidden');
+            }
+            currentCategory = cat;
+            renderCategories();
+            renderGames();
+        }
+
+        function resetFilters() {
+            resetKiaraControl();
+            history.replaceState(null, null, window.location.pathname);
+        }
+
+        // =========================================================================
+        // 7. HYBRID N-GRAM MARKOV + SEMANTIC + 3-LAYER MLP RECOMMENDATIONS FEED
+        // =========================================================================
+        function computeHybridRecommendations(retrain = false) {
+            const container = document.getElementById('recommendations-grid');
+            const section = document.getElementById('recommendations-section');
+
+            if (!gamesData || gamesData.length === 0) return;
+
+            if (retrain) {
+                trainMLPFromUserSignals(3);
+            } else {
+                rebuildMarkovModel();
+            }
+
+            const hasSignals = wishlist.length > 0 || downloaded.length > 0 || searchHistory.length > 0 || interactionSequence.length > 0;
+
+            const scoredGames = gamesData.map(game => {
+                const vec = extractHybridFeatureVector(game, null);
+                const score = mlpRanker.predict(vec);
+                return { game, score, vec };
+            });
+
+            scoredGames.sort((a, b) => b.score - a.score);
+
+            let personalizedPicks = [];
+            let varietyPicks = [];
+
+            if (hasSignals) {
+                personalizedPicks = scoredGames.slice(0, 2).map(x => ({
+                    ...x.game,
+                    matchScore: Math.min(99, Math.max(65, Math.round(x.score * 100))),
+                    badgeText: x.vec[0] >= 0.4 ? `🔗 Markov + MLP ${Math.min(99, Math.round(x.score * 100))}%` : `🧠 MLP Match ${Math.min(99, Math.round(x.score * 100))}%`
+                }));
+                const remaining = scoredGames.slice(2);
+                remaining.sort(() => 0.5 - Math.random());
+                varietyPicks = remaining.slice(0, 2).map(x => ({
+                    ...x.game,
+                    matchScore: 'Variety',
+                    badgeText: '✨ Explore Variety'
+                }));
+            } else {
+                const shuffled = [...gamesData].sort(() => 0.5 - Math.random());
+                personalizedPicks = shuffled.slice(0, 2).map(g => ({ ...g, badgeText: '🧠 MLP Cold-Start Pick' }));
+                varietyPicks = shuffled.slice(2, 4).map(g => ({ ...g, badgeText: '✨ Explore Variety' }));
+            }
+
+            renderRecommendationTiles([...personalizedPicks, ...varietyPicks]);
+            section.classList.remove('hidden');
+        }
+
+        function renderKiaraInfluencedFeed(topMatches) {
+            if (!topMatches || topMatches.length === 0) return;
+            const picks = topMatches.slice(0, 4).map(m => ({
+                ...m.game,
+                badgeText: `✨ Kiara: ${m.why}`
+            }));
+            renderRecommendationTiles(picks);
+            document.getElementById('recommendations-section').classList.remove('hidden');
+        }
+
+        function renderRecommendationTiles(finalFeed) {
+            const container = document.getElementById('recommendations-grid');
+            container.innerHTML = finalFeed.map((game) => {
+                const isVarietyTile = (game.badgeText || '').includes('Variety');
+
+                return `
+                    <div class="glass-card rounded-2xl overflow-hidden flex flex-col justify-between p-3 border ${isVarietyTile ? 'border-neonPurple/40 bg-neonPurple/5' : 'border-neonCyan/40 bg-neonCyan/5'} group">
+                        <div>
+                            <div class="relative aspect-video rounded-xl overflow-hidden mb-2.5 bg-gray-950 cursor-pointer" onclick="openGameModal(${game.id})">
+                                <img src="${game.thumbnail}" alt="${game.title}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" onerror="this.onerror=null; this.src=getRandomFallback();">
+                                <span class="absolute top-2 left-2 max-w-[85%] truncate text-[10px] px-2 py-0.5 rounded-md glass-panel ${isVarietyTile ? 'text-neonPurple border-neonPurple/30' : 'text-neonCyan border-neonCyan/30'} font-bold font-mono">
+                                    ${game.badgeText}
+                                </span>
+                                <span class="absolute bottom-2 right-2 text-[10px] px-2 py-0.5 rounded-md glass-panel text-amber-300 border border-amber-400/30 font-mono font-bold">
+                                    <i class="fa-solid fa-hard-drive text-[9px] mr-1"></i>${game.approxSize}
+                                </span>
+                            </div>
+                            <h4 onclick="openGameModal(${game.id})" class="font-bold text-sm truncate cursor-pointer hover:text-neonCyan transition-colors">${game.title}</h4>
+                            <div class="mt-1 mb-1">${getConnectivityBadge(game.playMode)}</div>
+                            <p class="text-[11px] text-gray-400 line-clamp-1 mt-0.5">${game.features}</p>
+                        </div>
+                        <div class="mt-3 flex items-center justify-between border-t border-gray-700/30 pt-2">
+                            <span class="text-[10px] text-gray-400 font-medium">${game.platform}</span>
+                            <button onclick="openStoreLink('${game.storeUrl}', '${game.title}', ${game.id})" class="text-xs text-neonCyan font-bold hover:underline flex items-center gap-1">
+                                Launch Store <i class="fa-solid fa-arrow-up-right-from-square text-[10px]"></i>
+                            </button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function renderGames() {
+            const grid = document.getElementById('games-grid');
+            let filtered = gamesData.filter(g => {
+                if (kiaraFilterState.active) {
+                    if (kiaraFilterState.offlineOnly && !g.playMode.toLowerCase().includes("offline")) return false;
+                    if (kiaraFilterState.onlineOnly && g.playMode.toLowerCase() === "offline") return false;
+                    if (kiaraFilterState.maxSizeGB !== null && g.sizeGB > kiaraFilterState.maxSizeGB) return false;
+                    if (kiaraFilterState.minSizeGB !== null && g.sizeGB < kiaraFilterState.minSizeGB) return false;
+                    if (kiaraFilterState.platform && g.platform.toLowerCase() !== kiaraFilterState.platform.toLowerCase()) return false;
+                    return true;
+                }
+
+                const matchesSearch = searchQuery === "" ||
+                    g.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                    g.genre.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                    g.playMode.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                    (g.similarTo && g.similarTo.toLowerCase().includes(searchQuery.toLowerCase()));
+                if (!matchesSearch) return false;
+                if (currentCategory === "Featured") return true;
+                if (currentCategory === "Offline Playable") return g.playMode.toLowerCase().includes("offline");
+                if (currentCategory === "Under 25 GB") return g.sizeGB <= 25;
+                if (currentCategory === "Steam") return g.platform === "Steam";
+                if (currentCategory === "Epic Games") return g.platform === "Epic Games";
+                return g.genre.toLowerCase().includes(currentCategory.toLowerCase());
+            });
+
+            if (kiaraFilterState.active && Array.isArray(kiaraFilterState.rankedGameIds)) {
+                const rankMap = new Map(kiaraFilterState.rankedGameIds.map((id, idx) => [id, idx]));
+                filtered.sort((a, b) => (rankMap.get(a.id) ?? 999) - (rankMap.get(b.id) ?? 999));
+            }
+
+            document.getElementById('section-title').textContent = kiaraFilterState.active
+                ? `Kiara Selected Games`
+                : (currentCategory === "Featured" ? "Featured Free Games" : `${currentCategory} Games`);
+            document.getElementById('game-count-label').textContent = `Showing ${filtered.length} of ${gamesData.length} games`;
+
+            if (filtered.length === 0) {
+                grid.innerHTML = `
+                    <div class="col-span-full glass-panel rounded-2xl p-8 text-center max-w-lg mx-auto my-4 border border-white/10 space-y-3">
+                        <div class="w-12 h-12 rounded-2xl bg-neonCyan/10 border border-neonCyan/30 text-neonCyan flex items-center justify-center mx-auto text-xl">
+                            <i class="fa-solid fa-compass"></i>
+                        </div>
+                        <h3 class="text-lg font-extrabold">No exact games matched this filter</h3>
+                        <p class="text-xs text-gray-400">Try clearing your active filters or let Kiara find the closest semantic alternatives for you.</p>
+                        <div class="pt-2 flex flex-wrap items-center justify-center gap-2.5">
+                            <button onclick="resetFilters()" class="px-4 py-2 rounded-xl bg-neonCyan text-darkBg font-bold text-xs hover:opacity-90 transition-all">
+                                Reset All Filters
+                            </button>
+                            <button onclick="toggleKiaraPanel(true)" class="px-4 py-2 rounded-xl glass-card border border-purple-400/30 text-purple-200 font-bold text-xs hover:bg-purple-500/15 transition-all flex items-center gap-1.5">
+                                <i class="fa-solid fa-wand-magic-sparkles text-neonCyan"></i> Ask Kiara AI
+                            </button>
+                        </div>
+                    </div>
+                `;
+                return;
+            }
+            
+            grid.innerHTML = filtered.map(game => {
+                const isWishlisted = wishlist.some(w => w.id === game.id);
+                const isDownloaded = downloaded.some(d => d.id === game.id);
+                const isCompared = compareList.some(c => c.id === game.id);
+                const hasVideo = game.videoUrl && game.videoUrl.trim() !== '';
+                const fitsUserSSD = freeDiskGB !== null && freeDiskGB > 0 ? game.sizeGB <= freeDiskGB : null;
+
+                return `
+                    <div class="glass-card rounded-2xl overflow-hidden flex flex-col relative group">
+                        <div class="relative aspect-video bg-gray-950 cursor-pointer overflow-hidden" ${hasVideo ? 'onmouseenter="playVid(this)" onmouseleave="stopVid(this)"' : ''} onclick="openGameModal(${game.id})">
+                            <img src="${game.thumbnail}" alt="${game.title}" 
+                                 class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" 
+                                 onerror="this.onerror=null; this.src=getRandomFallback();">
+                            ${hasVideo ? `<video src="${game.videoUrl}" muted loop playsinline class="absolute inset-0 w-full h-full object-cover opacity-0 transition-opacity duration-300 pointer-events-none"></video>` : ''}
+                            
+                            <!-- Platform Badge (Top Left) -->
+                            <div class="absolute top-2.5 left-2.5 px-2.5 py-1 rounded-lg glass-panel text-[11px] font-bold flex items-center gap-1.5">
+                                <i class="fa-brands ${game.platform === 'Steam' ? 'fa-steam text-blue-400' : 'fa-gamepad text-purple-400'}"></i>
+                                ${game.platform}
+                            </div>
+
+                            <!-- Compare Button (Top Right) -->
+                            <button onclick="event.stopPropagation(); toggleCompare(${game.id})" class="absolute top-2.5 right-2.5 p-2 rounded-xl glass-panel text-xs ${isCompared ? 'bg-neonCyan text-darkBg font-bold' : 'hover:text-neonCyan'}" title="Add to Compare">
+                                <i class="fa-solid fa-scale-balanced"></i>
+                            </button>
+
+                            <!-- Storage Size Badge (Bottom Right) -->
+                            <div class="absolute bottom-2.5 right-2.5 px-2.5 py-0.5 rounded-lg glass-panel text-[11px] font-mono font-bold ${fitsUserSSD === false ? 'text-red-400 border-red-400/40' : 'text-amber-300 border-amber-400/30'} border flex items-center gap-1 shadow-md" title="${fitsUserSSD === false ? 'Exceeds your free SSD space' : 'Estimated install size'}">
+                                <i class="fa-solid fa-hard-drive text-[10px]"></i> ${game.approxSize}
+                            </div>
+                        </div>
+
+                        <div class="p-4 flex-1 flex flex-col justify-between">
+                            <div>
+                                <div class="flex items-center justify-between gap-1.5 flex-wrap mb-2">
+                                    <span class="text-[10px] px-2.5 py-0.5 rounded-full bg-neonCyan/10 text-neonCyan border border-neonCyan/20 font-bold">${game.genre}</span>
+                                    ${getConnectivityBadge(game.playMode)}
+                                </div>
+                                <h3 onclick="openGameModal(${game.id})" class="font-bold text-base hover:text-neonCyan cursor-pointer transition-colors line-clamp-1">${game.title}</h3>
+                                <p class="text-xs text-gray-400 mt-1 line-clamp-2">${game.features}</p>
+                            </div>
+
+                            <div class="mt-4 pt-3 border-t border-gray-700/30 flex items-center justify-between">
+                                <div class="flex items-center gap-1.5">
+                                    <button onclick="toggleWishlist(${game.id})" class="p-2 rounded-xl glass-card ${isWishlisted ? 'text-red-500' : 'text-gray-400 hover:text-red-400'}" title="Wishlist"><i class="${isWishlisted ? 'fa-solid' : 'fa-regular'} fa-heart"></i></button>
+                                    <button onclick="toggleDownloaded(${game.id})" class="p-2 rounded-xl glass-card ${isDownloaded ? 'text-neonCyan' : 'text-gray-400 hover:text-neonCyan'}" title="Mark Played"><i class="fa-solid fa-download"></i></button>
+                                    <button onclick="shareGame(${game.id})" class="p-2 rounded-xl glass-card text-gray-400 hover:text-neonCyan" title="Quick Share Link"><i class="fa-solid fa-share-nodes"></i></button>
+                                </div>
+                                <button onclick="openStoreLink('${game.storeUrl}', '${game.title}', ${game.id})" class="px-3.5 py-1.5 rounded-xl bg-neonCyan/10 hover:bg-neonCyan hover:text-darkBg text-neonCyan border border-neonCyan/30 text-xs font-bold transition-all flex items-center gap-1.5">
+                                    Store Page <i class="fa-solid fa-arrow-up-right-from-square text-[10px]"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function playVid(el) { const vid = el.querySelector('video'); if (vid) { vid.style.opacity = '1'; vid.play().catch(() => {}); } }
+        function stopVid(el) { const vid = el.querySelector('video'); if (vid) { vid.pause(); vid.currentTime = 0; vid.style.opacity = '0'; } }
+
+        function toggleSidebar() { document.getElementById('sidebar').classList.toggle('-translate-x-full'); document.getElementById('sidebar-backdrop').classList.toggle('hidden'); }
+        function toggleTheme() { document.documentElement.classList.toggle('dark'); document.documentElement.classList.toggle('light'); }
+
+        let activeSidebarTab = 'wishlist';
+        function switchSidebarTab(tab) {
+            activeSidebarTab = tab;
+            ['wishlist', 'downloaded', 'history'].forEach(t => {
+                const btn = document.getElementById(`sb-tab-${t}`);
+                if (t === tab) { btn.classList.add('border-neonCyan', 'text-neonCyan'); btn.classList.remove('border-transparent', 'text-gray-400'); }
+                else { btn.classList.remove('border-neonCyan', 'text-neonCyan'); btn.classList.add('border-transparent', 'text-gray-400'); }
+            });
+            document.getElementById('wishlist-storage-banner').classList.toggle('hidden', tab !== 'wishlist');
+            renderSidebarContent();
+        }
+
+        function renderSidebarContent() {
+            const container = document.getElementById('sidebar-content');
+            if (activeSidebarTab === 'wishlist') {
+                if (wishlist.length === 0) return container.innerHTML = `<div class="text-center py-10 text-gray-400 text-sm">Wishlist is empty.</div>`;
+                container.innerHTML = wishlist.map(game => renderSidebarItem(game, 'wishlist')).join('');
+            } else if (activeSidebarTab === 'downloaded') {
+                if (downloaded.length === 0) return container.innerHTML = `<div class="text-center py-10 text-gray-400 text-sm">No played games marked yet.</div>`;
+                container.innerHTML = downloaded.map(game => renderSidebarItem(game, 'downloaded')).join('');
+            } else if (activeSidebarTab === 'history') {
+                if (searchHistory.length === 0) return container.innerHTML = `<div class="text-center py-10 text-gray-400 text-sm">No search history recorded.</div>`;
+                container.innerHTML = `<div class="flex justify-between items-center mb-2"><span class="text-xs text-gray-400">Recent Searches</span><button onclick="clearSearchHistory()" class="text-xs text-red-400 hover:underline">Clear All</button></div>` + 
+                searchHistory.map((item, idx) => `
+                    <div class="flex items-center justify-between p-3 rounded-xl glass-card text-sm">
+                        <span onclick="searchFromHistory('${item}')" class="cursor-pointer hover:text-neonCyan truncate flex-1">${item}</span>
+                        <button onclick="removeSearchHistoryItem(${idx})" class="text-gray-400 hover:text-red-400 p-1"><i class="fa-solid fa-xmark"></i></button>
+                    </div>
+                `).join('');
+            }
+        }
+
+        function renderSidebarItem(game, type) {
+            const sizeLabel = game.approxSize || '25 GB';
+            return `
+                <div class="flex items-center gap-3 p-2.5 rounded-xl glass-card">
+                    <img src="${game.thumbnail}" class="w-12 h-12 object-cover rounded-lg" onerror="this.onerror=null; this.src=getRandomFallback();">
+                    <div class="flex-1 min-w-0">
+                        <h4 class="font-bold text-sm truncate">${game.title}</h4>
+                        <div class="flex items-center gap-2 text-xs text-gray-400 mt-0.5">
+                            <span>${game.genre}</span>
+                            <span class="text-amber-300 font-mono font-semibold">• ${sizeLabel}</span>
+                        </div>
+                    </div>
+                    <button onclick="removeFromList(${game.id}, '${type}')" class="p-2 text-gray-400 hover:text-red-400"><i class="fa-solid fa-xmark"></i></button>
+                </div>
+            `;
+        }
+
+        function updateSidebarCounts() {
+            document.getElementById('wishlist-count').textContent = wishlist.length;
+            document.getElementById('downloaded-count').textContent = downloaded.length;
+            
+            const totalGB = wishlist.reduce((sum, item) => {
+                const gb = item.sizeGB || parseSizeToGB(item.approxSize || '25 GB');
+                return sum + gb;
+            }, 0);
+
+            const roundedGB = Math.round(totalGB * 10) / 10;
+            document.getElementById('wishlist-total-gb').textContent = `${roundedGB} GB Required`;
+            
+            const fitBadge = document.getElementById('wishlist-ssd-fit');
+            if (wishlist.length === 0) {
+                fitBadge.textContent = "Empty";
+            } else if (roundedGB <= 256) {
+                fitBadge.textContent = "Fits 512GB SSD";
+            } else if (roundedGB <= 850) {
+                fitBadge.textContent = "Needs 1TB SSD";
+            } else {
+                fitBadge.textContent = "Needs 2TB SSD";
+            }
+
+            // Update remaining free SSD status banner if user entered their drive space
+            const diskStatusEl = document.getElementById('free-disk-status');
+            if (diskStatusEl) {
+                if (freeDiskGB !== null && freeDiskGB > 0) {
+                    const diff = Math.round((freeDiskGB - roundedGB) * 10) / 10;
+                    diskStatusEl.classList.remove('hidden');
+                    if (diff >= 0) {
+                        diskStatusEl.className = "text-[11px] font-mono text-emerald-300";
+                        diskStatusEl.textContent = `✓ Wishlist fits! ${diff} GB left free.`;
+                    } else {
+                        diskStatusEl.className = "text-[11px] font-mono text-red-400";
+                        diskStatusEl.textContent = `⚠ Over free space by ${Math.abs(diff)} GB.`;
+                    }
+                } else {
+                    diskStatusEl.classList.add('hidden');
+                }
+            }
+
+            localStorage.setItem('qway_wishlist', JSON.stringify(wishlist));
+            localStorage.setItem('qway_downloaded', JSON.stringify(downloaded));
+            renderSidebarContent();
+        }
+
+        function toggleWishlist(id) {
+            const game = gamesData.find(g => g.id === id);
+            const idx = wishlist.findIndex(g => g.id === id);
+            if (idx > -1) {
+                wishlist.splice(idx, 1);
+                showToast(`Removed "${game.title}" from Wishlist`);
+            } else {
+                wishlist.push(game);
+                recordInteraction(id);
+                showToast(`Added "${game.title}" (${game.approxSize}) to Wishlist`);
+            }
+            updateSidebarCounts(); renderGames(); computeHybridRecommendations(true);
+        }
+
+        function toggleDownloaded(id) {
+            const game = gamesData.find(g => g.id === id);
+            const idx = downloaded.findIndex(g => g.id === id);
+            if (idx > -1) downloaded.splice(idx, 1);
+            else {
+                downloaded.push(game);
+                recordInteraction(id);
+            }
+            updateSidebarCounts(); renderGames(); computeHybridRecommendations(true);
+        }
+
+        function removeFromList(id, type) {
+            if (type === 'wishlist') wishlist = wishlist.filter(g => g.id !== id);
+            if (type === 'downloaded') downloaded = downloaded.filter(g => g.id !== id);
+            updateSidebarCounts(); renderGames(); computeHybridRecommendations(true);
+        }
+
+        function recordSearchHistory(term) {
+            if (!historyEnabled || !term) return;
+            searchHistory = searchHistory.filter(h => h.toLowerCase() !== term.toLowerCase());
+            searchHistory.unshift(term);
+            if (searchHistory.length > 15) searchHistory.pop();
+            localStorage.setItem('qway_history', JSON.stringify(searchHistory));
+            computeHybridRecommendations(false);
+        }
+
+        function showSearchHistoryDropdown() {
+            const dropdown = document.getElementById('search-history-dropdown');
+            const filtered = searchHistory.filter(h => h.toLowerCase().includes(searchQuery.toLowerCase()));
+            if (filtered.length === 0) return dropdown.classList.add('hidden');
+            dropdown.innerHTML = filtered.map((item, idx) => `
+                <div class="px-4 py-2.5 hover:bg-white/10 flex items-center justify-between cursor-pointer text-sm" onclick="selectHistoryItem('${item}')">
+                    <span class="truncate">${item}</span>
+                    <button onclick="event.stopPropagation(); removeSearchHistoryItem(${idx})" class="text-gray-500 hover:text-red-400"><i class="fa-solid fa-xmark"></i></button>
+                </div>
+            `).join('');
+            dropdown.classList.remove('hidden');
+        }
+
+        function hideSearchHistoryDropdown() { document.getElementById('search-history-dropdown').classList.add('hidden'); }
+        function selectHistoryItem(term) { document.getElementById('global-search').value = term; searchQuery = term; updateSearchClearUI(); hideSearchHistoryDropdown(); renderGames(); }
+        function searchFromHistory(term) { document.getElementById('global-search').value = term; searchQuery = term; updateSearchClearUI(); renderGames(); }
+        function removeSearchHistoryItem(idx) { searchHistory.splice(idx, 1); localStorage.setItem('qway_history', JSON.stringify(searchHistory)); showSearchHistoryDropdown(); renderSidebarContent(); }
+        function clearSearchHistory() { searchHistory = []; localStorage.removeItem('qway_history'); renderSidebarContent(); hideSearchHistoryDropdown(); }
+        function toggleHistorySetting() { historyEnabled = document.getElementById('setting-history-toggle').checked; localStorage.setItem('qway_history_enabled', historyEnabled); }
+
+        function openGameModal(id) {
+            const game = gamesData.find(g => g.id === id);
+            if (!game) return;
+            recordInteraction(id);
+            const slug = slugifyTitle(game.title);
+            history.replaceState(null, null, `#game=${slug}`);
+
+            document.getElementById('modal-body').innerHTML = `
+                <div class="aspect-video rounded-xl overflow-hidden mb-4 relative bg-black">
+                    <img src="${game.thumbnail}" alt="${game.title}" class="w-full h-full object-cover" onerror="this.onerror=null; this.src=getRandomFallback();">
+                    <div class="absolute bottom-3 right-3 px-3 py-1 rounded-lg glass-panel text-xs font-mono font-bold text-amber-300 border border-amber-400/30">
+                        <i class="fa-solid fa-hard-drive mr-1"></i> Est. Size: ${game.approxSize}
+                    </div>
+                </div>
+                <div class="flex items-center justify-between flex-wrap gap-2 mb-2">
+                    <div class="flex items-center gap-2 flex-wrap">
+                        <span class="text-xs px-2.5 py-1 rounded-full bg-neonCyan/10 text-neonCyan border border-neonCyan/20 font-bold">${game.genre}</span>
+                        ${getConnectivityBadge(game.playMode)}
+                    </div>
+                    <span class="text-sm font-semibold text-gray-400">${game.availability}</span>
+                </div>
+                <h2 class="text-2xl font-extrabold mb-2">${game.title}</h2>
+                <p class="text-gray-300 text-sm mb-4">${game.features}</p>
+                <div class="grid grid-cols-3 gap-3 mb-4 text-sm">
+                    <div class="glass-card p-3 rounded-xl"><span class="text-xs text-gray-400 block">Storage Needed</span><span class="font-bold text-amber-300 font-mono">${game.approxSize}</span></div>
+                    <div class="glass-card p-3 rounded-xl"><span class="text-xs text-gray-400 block">Connectivity</span><span class="font-semibold">${game.playMode}</span></div>
+                    <div class="glass-card p-3 rounded-xl"><span class="text-xs text-gray-400 block">AAA Alternative</span><span class="font-semibold line-clamp-1">${game.similarTo}</span></div>
+                </div>
+                <div class="flex flex-col sm:flex-row gap-2.5">
+                    <button onclick="openStoreLink('${game.storeUrl}', '${game.title}', ${game.id})" class="flex-1 py-3 px-4 rounded-xl bg-gradient-to-r from-neonCyan to-neonPurple text-darkBg font-bold text-center text-sm shadow-lg hover:opacity-95 flex items-center justify-center gap-2">
+                        <span>Go to Official Store Page</span>
+                        <i class="fa-solid fa-arrow-up-right-from-square"></i>
+                    </button>
+                    <button onclick="shareGame(${game.id})" class="py-3 px-4 rounded-xl glass-card border border-neonCyan/30 text-neonCyan hover:bg-neonCyan/10 font-bold text-sm flex items-center justify-center gap-2 transition-all">
+                        <i class="fa-solid fa-share-nodes"></i>
+                        <span>Quick Share</span>
+                    </button>
+                </div>
+            `;
+            document.getElementById('game-modal').classList.remove('hidden');
+        }
+
+        function closeGameModal() {
+            document.getElementById('game-modal').classList.add('hidden');
+            history.replaceState(null, null, window.location.pathname);
+        }
+
+        function toggleCompare(id) {
+            const game = gamesData.find(g => g.id === id);
+            const idx = compareList.findIndex(c => c.id === id);
+            if (idx > -1) compareList.splice(idx, 1);
+            else if (compareList.length < 3) compareList.push(game);
+            else showToast("Maximum 3 games allowed in side-by-side comparison.");
+            document.getElementById('compare-badge').textContent = compareList.length;
+            document.getElementById('compare-badge').classList.toggle('hidden', compareList.length === 0);
+            renderGames();
+        }
+
+        function openCompareModal() {
+            if (compareList.length === 0) return showToast("Click the scale icon on game cards to select titles for comparison.");
+            document.getElementById('compare-modal-content').innerHTML = `
+                <table class="w-full text-left border-collapse text-sm">
+                    <thead><tr class="border-b border-gray-700/50"><th class="p-3 text-gray-400">Spec</th>${compareList.map(g => `<th class="p-3 font-bold text-neonCyan">${g.title}</th>`).join('')}</tr></thead>
+                    <tbody class="divide-y divide-gray-700/30">
+                        <tr><td class="p-3 text-gray-400">Platform</td>${compareList.map(g => `<td class="p-3">${g.platform}</td>`).join('')}</tr>
+                        <tr><td class="p-3 text-gray-400">Approx Size</td>${compareList.map(g => `<td class="p-3 font-mono font-bold text-amber-300">${g.approxSize}</td>`).join('')}</tr>
+                        <tr><td class="p-3 text-gray-400">Connectivity</td>${compareList.map(g => `<td class="p-3">${getConnectivityBadge(g.playMode)}</td>`).join('')}</tr>
+                        <tr><td class="p-3 text-gray-400">Genre</td>${compareList.map(g => `<td class="p-3">${g.genre}</td>`).join('')}</tr>
+                        <tr><td class="p-3 text-gray-400">Key Features</td>${compareList.map(g => `<td class="p-3 text-xs text-gray-300">${g.features}</td>`).join('')}</tr>
+                        <tr><td class="p-3 text-gray-400">Action</td>${compareList.map(g => `<td class="p-3"><button onclick="openStoreLink('${g.storeUrl}', '${g.title}', ${g.id})" class="text-neonCyan hover:underline text-xs font-bold">Open Store <i class="fa-solid fa-arrow-up-right-from-square"></i></button></td>`).join('')}</tr>
+                    </tbody>
+                </table>
+            `;
+            document.getElementById('compare-modal').classList.remove('hidden');
+        }
+
+        function closeCompareModal() { document.getElementById('compare-modal').classList.add('hidden'); }
+    </script>
+</body>
+</html>
