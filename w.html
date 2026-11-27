@@ -2530,11 +2530,194 @@
                     showToast("Invalid Kiara pattern JSON file.");
                 }
             };
-           reader.readAsText(file);
+        reader.readAsText(file);
         }
 
         // =====================================================================
-        // 5. TOAST NOTIFICATION & INSTANT QUICK-SHARE HELPERS
+        // 5. INDEXEDDB RETRIEVAL-AUGMENTED GENERATION (RAG) ENGINE
+        // =====================================================================
+        class IndexedDBRAGStore {
+            constructor(dbName = 'qway_kiara_rag_db', version = 1) {
+                this.dbName = dbName;
+                this.version = version;
+                this.db = null;
+                this.memoryChunks = [];
+                this.readyPromise = this.openDB();
+            }
+
+            openDB() {
+                return new Promise((resolve) => {
+                    if (typeof indexedDB === 'undefined') {
+                        resolve(null);
+                        return;
+                    }
+                    try {
+                        const req = indexedDB.open(this.dbName, this.version);
+                        req.onupgradeneeded = (event) => {
+                            const db = event.target.result;
+                            if (!db.objectStoreNames.contains('knowledge_chunks')) {
+                                const store = db.createObjectStore('knowledge_chunks', { keyPath: 'id' });
+                                store.createIndex('source', 'source', { unique: false });
+                            }
+                        };
+                        req.onsuccess = (event) => {
+                            this.db = event.target.result;
+                            this.loadAllToCache().finally(() => resolve(this.db));
+                        };
+                        req.onerror = () => resolve(null);
+                    } catch (err) {
+                        resolve(null);
+                    }
+                });
+            }
+
+            async loadAllToCache() {
+                if (!this.db) return;
+                return new Promise((resolve) => {
+                    try {
+                        const tx = this.db.transaction('knowledge_chunks', 'readonly');
+                        const store = tx.objectStore('knowledge_chunks');
+                        const req = store.getAll();
+                        req.onsuccess = () => {
+                            this.memoryChunks = Array.isArray(req.result) ? req.result : [];
+                            resolve();
+                        };
+                        req.onerror = () => resolve();
+                    } catch (err) {
+                        resolve();
+                    }
+                });
+            }
+
+            buildTermMap(text) {
+                const tokens = markovEngine.tokenize(String(text || ''));
+                const tf = {};
+                tokens.forEach(t => { tf[t] = (tf[t] || 0) + 1; });
+                return tf;
+            }
+
+            async upsertChunk(id, source, text, meta = {}) {
+                const cleanText = String(text || '').trim();
+                if (!cleanText || cleanText.length < 4) return;
+                const tf = this.buildTermMap(cleanText);
+                const record = {
+                    id: String(id),
+                    source: String(source || 'general'),
+                    text: cleanText,
+                    tf,
+                    meta,
+                    updatedAt: Date.now()
+                };
+
+                const idx = this.memoryChunks.findIndex(c => c.id === record.id);
+                if (idx >= 0) this.memoryChunks[idx] = record;
+                else this.memoryChunks.push(record);
+                if (this.memoryChunks.length > 400) {
+                    this.memoryChunks = this.memoryChunks.slice(-400);
+                }
+
+                await this.readyPromise;
+                if (!this.db) return;
+                return new Promise((resolve) => {
+                    try {
+                        const tx = this.db.transaction('knowledge_chunks', 'readwrite');
+                        tx.objectStore('knowledge_chunks').put(record);
+                        tx.oncomplete = () => resolve();
+                        tx.onerror = () => resolve();
+                    } catch (err) {
+                        resolve();
+                    }
+                });
+            }
+
+            async indexCatalogAndCorpus(games = [], corpus = [], memories = {}) {
+                const tasks = [];
+                (corpus || []).forEach((line, i) => {
+                    tasks.push(this.upsertChunk(`corpus_${i}`, 'kiara_corpus', line, { kind: 'self_knowledge' }));
+                });
+                (games || []).forEach((g) => {
+                    const doc = `${g.title} (${g.platform}) — Genre: ${g.genre}. Mode: ${g.playMode}. Size: ${g.approxSize}. Features: ${g.features}. Similar to: ${g.similarTo}.`;
+                    tasks.push(this.upsertChunk(`game_${g.id}`, 'catalog', doc, {
+                        gameId: g.id,
+                        title: g.title,
+                        sizeGB: g.sizeGB,
+                        playMode: g.playMode,
+                        platform: g.platform
+                    }));
+                });
+                Object.entries(memories || {}).forEach(([k, v]) => {
+                    tasks.push(this.upsertChunk(`mem_${k}`, 'user_memory', `User ${k.replace(/_/g, ' ')} is ${v}.`, { key: k, value: v }));
+                });
+                await Promise.allSettled(tasks);
+            }
+
+            scoreChunkAgainstQuery(chunk, queryTokens, rawLower) {
+                if (!chunk || !chunk.text) return 0;
+                const chunkLower = chunk.text.toLowerCase();
+                let score = 0;
+
+                if (rawLower && rawLower.length > 2 && chunkLower.includes(rawLower)) {
+                    score += 3.5;
+                }
+
+                const tf = chunk.tf || {};
+                for (const qt of queryTokens) {
+                    if (tf[qt]) {
+                        score += Math.min(2.5, 1 + Math.log1p(tf[qt]));
+                    } else if (chunkLower.includes(qt)) {
+                        score += 0.8;
+                    }
+                    const learned = nlpLearner.learnedConceptAssociations?.[qt];
+                    if (learned && chunk.meta?.gameId) {
+                        const gameConcepts = detectConceptsForText(chunk.text, true);
+                        gameConcepts.forEach(c => {
+                            if (learned[c]) score += learned[c] * 0.45;
+                        });
+                    }
+                }
+
+                if (chunk.source === 'user_memory') score += 0.6;
+                return score;
+            }
+
+            retrieveContext(query, topK = 4, sourceFilter = null) {
+                const queryTokens = nlpLearner.expandWithLearnedTerms(markovEngine.tokenize(query));
+                const rawLower = String(query || '').toLowerCase().trim();
+                const pool = sourceFilter
+                    ? this.memoryChunks.filter(c => c.source === sourceFilter)
+                    : this.memoryChunks;
+
+                const ranked = pool
+                    .map(chunk => ({
+                        chunk,
+                        score: this.scoreChunkAgainstQuery(chunk, queryTokens, rawLower)
+                    }))
+                    .filter(item => item.score > 0.25)
+                    .sort((a, b) => b.score - a.score)
+                    .slice(0, topK);
+
+                return ranked;
+            }
+        }
+
+        const ragStore = new IndexedDBRAGStore();
+
+        function buildGroundedRAGAnswer(userPrompt, learnedMemories = []) {
+            const retrieved = ragStore.retrieveContext(userPrompt, 3);
+            const namePrefix = userMemories?.user_name ? `${userMemories.user_name}, ` : '';
+            const memNote = learnedMemories.length > 0 ? `I also saved **${learnedMemories.join(', ')}** in your memory. ` : '';
+            const synth = nlpLearner.synthesizeClauseFromSeed(markovEngine.tokenize(userPrompt), 12);
+
+            if (retrieved.length > 0) {
+                const snippets = retrieved.map(r => r.chunk.text.replace(/\.$/, '')).join(' • ');
+                return `${namePrefix}${memNote}Based on what I retrieved from your IndexedDB knowledge store: **${escapeHtml(snippets)}**.${synth ? ` ${synth}.` : ''} Tell me what you want to do next—I can filter games, compare titles, or chat through ideas.`;
+            }
+
+            return nlpLearner.generateConversationalReply(userPrompt, learnedMemories);
+        }
+
+        // =====================================================================
+        // 6. TOAST NOTIFICATION & INSTANT QUICK-SHARE HELPERS
         // =====================================================================
         function showToast(msg) {
             const toast = document.getElementById('toast-notification');
@@ -2598,7 +2781,7 @@
         }
 
         // =====================================================================
-        // 6. SEARCH BAR CLEAR BUTTON & KEYBOARD SHORTCUTS ('/', 'Escape', 'Alt+K')
+        // 7. SEARCH BAR CLEAR BUTTON & KEYBOARD SHORTCUTS ('/', 'Escape', 'Alt+K')
         // =====================================================================
         function updateSearchClearUI() {
             const searchInput = document.getElementById('global-search');
@@ -2682,7 +2865,7 @@
         });
 
         // =====================================================================
-        // 7. REMAINING FREE DISK SPACE & FULL LIBRARY EXPORT / IMPORT
+        // 8. REMAINING FREE DISK SPACE, LIBRARY I/O & CATALOG LIFECYCLE
         // =====================================================================
         function updateFreeDiskSpace(val) {
             const num = parseFloat(val);
@@ -2856,9 +3039,6 @@
             reader.readAsText(file);
         }
 
-        // =====================================================================
-        // 8. STORAGE SIZE, CONNECTIVITY BADGES & CATALOG LIFECYCLE
-        // =====================================================================
         function parseSizeToGB(sizeStr) {
             if (!sizeStr) return 20;
             const str = String(sizeStr).toUpperCase();
@@ -2899,15 +3079,15 @@
                 background_color: "#05070a",
                 theme_color: "#00f2fe",
                 icons: [
-                    { 
-                        src: "icon.png", 
-                        sizes: "512x512", 
+                    {
+                        src: "icon.png",
+                        sizes: "512x512",
                         type: "image/png",
                         purpose: "any maskable"
                     }
                 ]
             };
-            const blob = new Blob([JSON.stringify(manifest)], {type: 'application/json'});
+            const blob = new Blob([JSON.stringify(manifest)], { type: 'application/json' });
             const manifestEl = document.getElementById('pwa-manifest');
             if (manifestEl) manifestEl.href = URL.createObjectURL(blob);
 
@@ -2938,6 +3118,7 @@
 
         window.addEventListener('DOMContentLoaded', () => {
             initPWA();
+            prewarmFemaleVoices();
             updateKiaraVoiceUI();
             nlpLearner.refreshStatsUI();
             renderSavedMemoriesUI();
@@ -3013,7 +3194,7 @@
             const label = document.getElementById('single-tab-label');
             const icon = document.getElementById('single-tab-icon');
             if (!btn || !icon) return;
-            
+
             if (singleTabMode) {
                 btn.className = "px-2.5 sm:px-3 py-2 rounded-xl glass-card text-neonCyan border border-neonCyan/40 flex items-center gap-1.5 text-xs font-semibold transition-all shadow-md";
                 if (label) label.textContent = "Single Tab: ON";
@@ -3027,6 +3208,7 @@
 
         function onCatalogLoaded() {
             indexCatalogIntoKiaraNLP();
+            ragStore.indexCatalogAndCorpus(gamesData, KIARA_SELF_CORPUS, userMemories);
             renderGames();
             computeHybridRecommendations(true);
             updateSidebarCounts();
@@ -3037,10 +3219,10 @@
             const syncStatus = document.getElementById('sync-status');
             if (syncStatus) syncStatus.textContent = "Loading JSON...";
             try {
-                const response = await fetch('games.json');
+                const response = await fetch('./games.json');
                 if (!response.ok) throw new Error('Network response was not ok');
                 const rows = await response.json();
-                
+
                 if (Array.isArray(rows) && rows.length > 0) {
                     gamesData = rows.map((r, i) => parseSheetRow(r, i));
                     if (syncStatus) syncStatus.textContent = "GitHub JSON Active";
@@ -3166,7 +3348,7 @@
         }
 
         // =====================================================================
-        // 9. HYBRID N-GRAM MARKOV + SEMANTIC + BACKPROP MLP RECOMMENDATIONS FEED
+        // 9. HYBRID N-GRAM MARKOV + RAG + SEMANTIC + BACKPROP MLP RECOMMENDATIONS
         // =====================================================================
         function computeHybridRecommendations(retrain = false) {
             const container = document.getElementById('recommendations-grid');
@@ -3322,7 +3504,7 @@
                 `;
                 return;
             }
-            
+
             grid.innerHTML = filtered.map(game => {
                 const isWishlisted = wishlist.some(w => w.id === game.id);
                 const isDownloaded = downloaded.some(d => d.id === game.id);
@@ -3333,11 +3515,11 @@
                 return `
                     <div class="glass-card rounded-2xl overflow-hidden flex flex-col relative group">
                         <div class="relative aspect-video bg-gray-950 cursor-pointer overflow-hidden" ${hasVideo ? 'onmouseenter="playVid(this)" onmouseleave="stopVid(this)"' : ''} onclick="openGameModal(${game.id})">
-                            <img src="${game.thumbnail}" alt="${escapeHtml(game.title)}" 
-                                 class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" 
+                            <img src="${game.thumbnail}" alt="${escapeHtml(game.title)}"
+                                 class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                                  onerror="this.onerror=null; this.src=getRandomFallback();">
                             ${hasVideo ? `<video src="${game.videoUrl}" muted loop playsinline class="absolute inset-0 w-full h-full object-cover opacity-0 transition-opacity duration-300 pointer-events-none"></video>` : ''}
-                            
+
                             <div class="absolute top-2.5 left-2.5 px-2.5 py-1 rounded-lg glass-panel text-[11px] font-bold flex items-center gap-1.5">
                                 <i class="fa-brands ${game.platform === 'Steam' ? 'fa-steam text-blue-400' : 'fa-gamepad text-purple-400'}"></i>
                                 ${escapeHtml(game.platform)}
@@ -3423,7 +3605,7 @@
                     container.innerHTML = `<div class="text-center py-10 text-gray-400 text-sm">No search history recorded.</div>`;
                     return;
                 }
-                container.innerHTML = `<div class="flex justify-between items-center mb-2"><span class="text-xs text-gray-400">Recent Searches</span><button type="button" onclick="clearSearchHistory()" class="text-xs text-red-400 hover:underline">Clear All</button></div>` + 
+                container.innerHTML = `<div class="flex justify-between items-center mb-2"><span class="text-xs text-gray-400">Recent Searches</span><button type="button" onclick="clearSearchHistory()" class="text-xs text-red-400 hover:underline">Clear All</button></div>` +
                 searchHistory.map((item, idx) => `
                     <div class="flex items-center justify-between p-3 rounded-xl glass-card text-sm">
                         <span onclick="searchFromHistory('${escapeHtml(item)}')" class="cursor-pointer hover:text-neonCyan truncate flex-1">${escapeHtml(item)}</span>
@@ -3455,7 +3637,7 @@
             const dCount = document.getElementById('downloaded-count');
             if (wCount) wCount.textContent = wishlist.length;
             if (dCount) dCount.textContent = downloaded.length;
-            
+
             const totalGB = wishlist.reduce((sum, item) => {
                 const gb = item.sizeGB || parseSizeToGB(item.approxSize || '25 GB');
                 return sum + gb;
@@ -3464,7 +3646,7 @@
             const roundedGB = Math.round(totalGB * 10) / 10;
             const totalEl = document.getElementById('wishlist-total-gb');
             if (totalEl) totalEl.textContent = `${roundedGB} GB Required`;
-            
+
             const fitBadge = document.getElementById('wishlist-ssd-fit');
             if (fitBadge) {
                 if (wishlist.length === 0) {
@@ -3539,6 +3721,7 @@
             searchHistory.unshift(term);
             if (searchHistory.length > 15) searchHistory.pop();
             safeStorageSet('qway_history', searchHistory);
+            ragStore.upsertChunk(`search_${Date.now()}`, 'search_history', `User searched for ${term}.`, { term });
             computeHybridRecommendations(false);
         }
 
@@ -3652,7 +3835,7 @@
         function closeCompareModal() { document.getElementById('compare-modal')?.classList.add('hidden'); }
 
         // =====================================================================
-        // 10. PERSONAL MEMORIES, SELF-KNOWLEDGE CORPUS & FEMALE / ZIRA VOICE
+        // 10. PERSONAL MEMORIES & FIXED FEMALE / ZIRA + SMARTPHONE VOICE
         // =====================================================================
         function extractAndSaveMemories(text) {
             if (!text || typeof text !== 'string') return [];
@@ -3671,6 +3854,7 @@
                     if (!/^(a|an|the|to|for|with|and|or|games?|playing|here|offline|online)$/i.test(val) || p.key !== 'user_name') {
                         userMemories[p.key] = val;
                         saved.push(`${p.key.replace(/_/g, ' ')}: ${val}`);
+                        ragStore.upsertChunk(`mem_${p.key}`, 'user_memory', `User ${p.key.replace(/_/g, ' ')} is ${val}.`, { key: p.key, value: val });
                     }
                 }
             }
@@ -3723,26 +3907,47 @@
             `;
         }
 
+        let cachedVoices = [];
+
+        function prewarmFemaleVoices() {
+            if (typeof window === 'undefined' || !('speechSynthesis' in window)) return;
+            try {
+                cachedVoices = window.speechSynthesis.getVoices() || [];
+                window.speechSynthesis.onvoiceschanged = () => {
+                    cachedVoices = window.speechSynthesis.getVoices() || [];
+                };
+            } catch (e) {}
+        }
+
         function getVoicesAsync() {
             return new Promise(resolve => {
                 if (typeof window === 'undefined' || !('speechSynthesis' in window)) {
                     resolve([]);
                     return;
                 }
-                const list = window.speechSynthesis.getVoices();
-                if (list && list.length > 0) {
-                    resolve(list);
+                const current = window.speechSynthesis.getVoices();
+                if (current && current.length > 0) {
+                    cachedVoices = current;
+                    resolve(current);
                     return;
                 }
-                const onVoicesChanged = () => {
-                    window.speechSynthesis.removeEventListener('voiceschanged', onVoicesChanged);
-                    resolve(window.speechSynthesis.getVoices() || []);
+                if (cachedVoices && cachedVoices.length > 0) {
+                    resolve(cachedVoices);
+                    return;
+                }
+
+                let settled = false;
+                const finish = (list) => {
+                    if (settled) return;
+                    settled = true;
+                    window.speechSynthesis.removeEventListener('voiceschanged', onChange);
+                    if (Array.isArray(list) && list.length > 0) cachedVoices = list;
+                    resolve(cachedVoices || []);
                 };
-                window.speechSynthesis.addEventListener('voiceschanged', onVoicesChanged);
-                setTimeout(() => {
-                    window.speechSynthesis.removeEventListener('voiceschanged', onVoicesChanged);
-                    resolve(window.speechSynthesis.getVoices() || []);
-                }, 400);
+
+                const onChange = () => finish(window.speechSynthesis.getVoices());
+                window.speechSynthesis.addEventListener('voiceschanged', onChange);
+                setTimeout(() => finish(window.speechSynthesis.getVoices()), 550);
             });
         }
 
@@ -3752,16 +3957,15 @@
                 const name = (v.name || '').toLowerCase();
                 const lang = (v.lang || '').toLowerCase();
                 let score = 0;
-                if (name.includes('zira')) score += 100;
-                if (name.includes('female') || name.includes('woman') || name.includes('girl')) score += 60;
-                if (/\b(aria|jenny|samantha|victoria|google uk english female|google us english|karen|moira|tessa|fiona|veena|heera|lekha|priya|ava|emma|sonia|libby|hazel)\b/.test(name)) {
-                    score += 50;
+                if (name.includes('zira')) score += 120;
+                if (/\b(female|woman|girl|aria|jenny|samantha|victoria|google uk english female|google us english|karen|moira|tessa|fiona|veena|heera|lekha|priya|ava|emma|sonia|libby|hazel|michelle|clara)\b/.test(name)) {
+                    score += 75;
                 }
-                if (lang.startsWith('en-in') || lang.startsWith('en-us') || lang.startsWith('en')) {
+                if (lang.startsWith('en-us') || lang.startsWith('en-gb') || lang.startsWith('en-in') || lang.startsWith('en')) {
                     score += 20;
                 }
-                if (/\b(david|mark|daniel|arthur|rishi|guy|ryan|george)\b/.test(name)) {
-                    score -= 40;
+                if (/\b(david|mark|daniel|arthur|rishi|guy|ryan|george|alex|fred)\b/.test(name)) {
+                    score -= 60;
                 }
                 return score;
             };
@@ -3788,6 +3992,8 @@
             updateKiaraVoiceUI();
             if (!kiaraVoiceEnabled && typeof window !== 'undefined' && 'speechSynthesis' in window) {
                 window.speechSynthesis.cancel();
+            } else if (kiaraVoiceEnabled) {
+                speakKiaraFemaleVoice("Kiara female voice is active and ready.");
             }
             showToast(kiaraVoiceEnabled ? "Kiara female/Zira voice enabled." : "Kiara voice muted.");
         }
@@ -3802,58 +4008,99 @@
             if (!plain) return;
 
             try {
-                window.speechSynthesis.cancel();
+                const synth = window.speechSynthesis;
+                if (synth.paused) synth.resume();
+                synth.cancel();
+
                 const voices = await getVoicesAsync();
                 const chosen = pickFemaleOrZiraVoice(voices);
-                const utter = new SpeechSynthesisUtterance(plain.slice(0, 420));
+                const utter = new SpeechSynthesisUtterance(plain.slice(0, 450));
                 if (chosen) {
                     utter.voice = chosen;
                     utter.lang = chosen.lang || 'en-US';
                 } else {
                     utter.lang = 'en-US';
                 }
-                utter.pitch = 1.12;
-                utter.rate = 1.02;
-                window.speechSynthesis.speak(utter);
+                utter.pitch = chosen && /zira|female|aria|jenny|samantha/i.test(chosen.name || '') ? 1.05 : 1.18;
+                utter.rate = 1.0;
+                utter.volume = 1.0;
+
+                utter.onerror = () => {
+                    // Fallback retry without custom voice object if OS rejects voice handle
+                    try {
+                        const fallbackUtter = new SpeechSynthesisUtterance(plain.slice(0, 300));
+                        fallbackUtter.lang = 'en-US';
+                        fallbackUtter.pitch = 1.15;
+                        synth.speak(fallbackUtter);
+                    } catch (e) {}
+                };
+
+                synth.speak(utter);
             } catch (e) {
                 // Ignore speech synthesis errors on restricted devices
             }
         }
 
         function toggleSmartphoneVoiceInput() {
+            if (typeof window !== 'undefined' && !window.isSecureContext && location.hostname !== 'localhost' && location.hostname !== '127.0.0.1') {
+                showToast("Voice mic requires HTTPS or localhost (open via GitHub Pages / localhost).");
+                return;
+            }
+
             const SpeechRec = window.SpeechRecognition || window.webkitSpeechRecognition;
             if (!SpeechRec) {
-                showToast("Voice input isn't supported in this browser—type your command instead.");
+                showToast("Voice input isn't supported in this browser—try Chrome, Edge, or Safari.");
                 return;
             }
 
             if (activeSpeechRecognition) {
                 try { activeSpeechRecognition.stop(); } catch (e) {}
                 activeSpeechRecognition = null;
+                const micBtn = document.getElementById('kiara-mic-btn');
+                if (micBtn) micBtn.classList.remove('text-neonCyan', 'animate-pulse', 'border-neonCyan/50');
                 return;
             }
 
             const micBtn = document.getElementById('kiara-mic-btn');
-            const rec = new SpeechRec();
+            let rec;
+            try {
+                rec = new SpeechRec();
+            } catch (err) {
+                showToast("Could not initialize speech recognition.");
+                return;
+            }
+
             rec.lang = navigator.language || 'en-US';
             rec.interimResults = false;
+            rec.continuous = false;
             rec.maxAlternatives = 1;
             activeSpeechRecognition = rec;
 
             if (micBtn) micBtn.classList.add('text-neonCyan', 'animate-pulse', 'border-neonCyan/50');
-            showToast("Listening... speak your command.");
+            showToast("Listening... speak naturally.");
 
             rec.onresult = (event) => {
-                const transcript = event.results?.[0]?.[0]?.transcript || '';
+                const transcript = (event.results?.[0]?.[0]?.transcript || '').trim();
                 if (transcript) {
                     const inp = document.getElementById('kiara-input');
                     if (inp) inp.value = transcript;
                     processKiaraCommand(transcript, true);
+                } else {
+                    showToast("Didn't catch any words—try speaking again.");
                 }
             };
 
-            rec.onerror = () => {
-                showToast("Couldn't capture voice—please check microphone permission.");
+            rec.onerror = (event) => {
+                const errType = event?.error || 'unknown';
+                if (errType === 'not-allowed' || errType === 'service-not-allowed') {
+                    showToast("Microphone permission denied—allow mic access in browser settings.");
+                } else if (errType === 'no-speech') {
+                    showToast("No speech detected—try speaking a bit louder.");
+                } else if (errType === 'audio-capture') {
+                    showToast("No microphone found on this device.");
+                } else {
+                    showToast(`Voice error (${errType})—type your message instead.`);
+                }
             };
 
             rec.onend = () => {
@@ -3866,14 +4113,18 @@
             } catch (e) {
                 activeSpeechRecognition = null;
                 if (micBtn) micBtn.classList.remove('text-neonCyan', 'animate-pulse', 'border-neonCyan/50');
-                showToast("Microphone busy—try again.");
+                showToast("Microphone busy—tap again to listen.");
             }
         }
 
-        // Seed base corpus & initial Markov/MLP state on load
+        // Seed base corpus, IndexedDB RAG & initial Markov/MLP state on load
         nlpLearner.seedSelfKnowledgeCorpus();
+        ragStore.indexCatalogAndCorpus(
+            (typeof gamesData !== 'undefined' && gamesData.length) ? gamesData : FALLBACK_CATALOG,
+            KIARA_SELF_CORPUS,
+            userMemories
+        );
         rebuildMarkovModel();
     </script>
 </body>
 </html>
-
